@@ -1,0 +1,17 @@
+uh_tn.free_values[1] - u((0.5, 0.5), tn) = 2.3952963541852324e-18
+ 55.688409 seconds (149.32 M allocations: 7.549 GiB, 3.85% gc time)
+uh_tn.free_values[1] - u((0.5, 0.5), tn) = 2.3952963541852324e-18
+ 11.941798 seconds (44.85 M allocations: 2.238 GiB, 4.37% gc time)
+
+======================================================================================
+                  Resource Usage on 2020-10-05 08:49:12:
+   Job Id:             11942074.gadi-pbs
+   Project:            bt62
+   Exit Status:        0
+   Service Units:      0.06
+   NCPUs Requested:    1                      NCPUs Used: 1               
+                                           CPU Time Used: 00:01:42                                   
+   Memory Requested:   4.0GB                 Memory Used: 2.79GB          
+   Walltime requested: 00:05:00            Walltime Used: 00:01:45        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

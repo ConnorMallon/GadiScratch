@@ -1,0 +1,17 @@
+testcomplete
+ 34.395064 seconds (74.63 M allocations: 4.347 GiB, 2.88% gc time)
+testcomplete
+  6.885119 seconds (8.14 M allocations: 1016.904 MiB, 3.85% gc time)
+
+======================================================================================
+                  Resource Usage on 2020-10-03 09:41:03:
+   Job Id:             11923020.gadi-pbs
+   Project:            bt62
+   Exit Status:        0
+   Service Units:      1.09
+   NCPUs Requested:    16                     NCPUs Used: 16              
+                                           CPU Time Used: 00:01:55                                   
+   Memory Requested:   96.0GB                Memory Used: 3.64GB          
+   Walltime requested: 00:05:00            Walltime Used: 00:01:22        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

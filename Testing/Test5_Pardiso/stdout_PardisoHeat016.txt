@@ -1,0 +1,14 @@
+uh_tn.free_values[1] - u((0.5, 0.5), tn) = 1.5612511283791267e-17
+
+======================================================================================
+                  Resource Usage on 2020-10-05 07:59:48:
+   Job Id:             11941923.gadi-pbs
+   Project:            bt62
+   Exit Status:        0
+   Service Units:      0.55
+   NCPUs Requested:    16                     NCPUs Used: 16              
+                                           CPU Time Used: 00:01:01                                   
+   Memory Requested:   64.0GB                Memory Used: 1.51GB          
+   Walltime requested: 00:05:00            Walltime Used: 00:01:02        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================
