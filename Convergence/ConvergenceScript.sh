@@ -4,7 +4,7 @@
 #PBS -l walltime=48:00:00
 #PBS -l ncpus=1
 #PBS -l mem=4gb
-#PBS -N my_test.jl
+#PBS -N Convergence.jl
 #PBS -l software=Gridap.jl
 #PBS -o /scratch/bt62/cm8825/stdout.txt
 #PBS -e /scratch/bt62/cm8825/stderr.txt

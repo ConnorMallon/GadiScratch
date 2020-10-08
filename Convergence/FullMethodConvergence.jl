@@ -74,7 +74,7 @@ p(x,t) = (x[1] + x[2])
 
 #Laws
 @law conv(u, ∇u) = (∇u') ⋅ u
-@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) + conv(du, ∇u)
+@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
 
 u(t::Real) = x -> u(x,t)
 #∂tu(x,t) = ∂tu(t)(x)
@@ -87,7 +87,7 @@ p(t::Real) = x -> p(x,t)
 #∂t(::typeof(p)) = ∂tp
 
 α = 1
-f(t) = x -> ∂t(u)(t)(x) + conv(u(t)(x),∇(u(t))(x)) - Δ(u(t))(x) + ∇(p(t))(x) #FOR INS TEST
+f(t) = x -> ∂t(u)(t)(x) + conv(u(t)(x),∇(u(t))(x)) - ν*Δ(u(t))(x) + ∇(p(t))(x) #FOR INS TEST
 #f(t) = x -> α*u(t)(x)-Δ(u(t))(x)+∇(p(t))(x) #FOR STOKES PROJECTOR TEST
 g(t) = x -> (∇⋅u(t))(x)
 
@@ -164,7 +164,8 @@ h = (box.pmax-box.pmin)[1]/partition[1]
 
 # Terms
 m_Ω(u, v) = u ⊙ v
-a_Ω(u, v) = ∇(u) ⊙ ∇(v)
+a_ΩSP(u, v) = ∇(u) ⊙ ∇(v)
+a_ΩINS(u, v) = ν* a_ΩSP(u, v)
 b_Ω(v, p) = -(∇ ⋅ v) * p
 c_Ω(u, v) = v ⊙ conv(u, ∇(u))
 dc_Ω(u, du, v) = v ⊙ dconv(du, ∇(du), u, ∇(u))
@@ -174,10 +175,12 @@ sb_Ω(p, q) = (β1 * h^2) * ∇(p) ⋅ ∇(q)
 sc_Ω(u,q) = (β1*h^2) * conv(u, ∇(u))⋅∇(q)
 dsc_Ω(u,du,q) = (β1*h^2) * ∇(q)⋅dconv(du, ∇(du), u, ∇(u))
 
-a_Γ(u, v) = -(n_Γ ⋅ ∇(u)) ⋅ v - u ⋅ (n_Γ ⋅ ∇(v)) + (γ / h) * u ⋅ v
+a_ΓSP(u, v) = ( -(n_Γ ⋅ ∇(u)) ⋅ v - u ⋅ (n_Γ ⋅ ∇(v)) + (γ / h) * u ⋅ v )
+a_ΓINS(u, v) = ν * a_ΓSP(u, v)
 b_Γ(v, p) = (n_Γ ⋅ v) * p
 
-i_Γg(u, v) = (β2 * h) * jump(n_Γg ⋅ ∇(u)) ⋅ jump(n_Γg ⋅ ∇(v))
+i_ΓgSP(u, v) = (β2 * h) * jump(n_Γg ⋅ ∇(u)) ⋅ jump(n_Γg ⋅ ∇(v))
+i_ΓgINS(u, v) = ν * i_ΓgSP(u, v)
 j_Γg(p, q) = (β3 * h^3) * jump(n_Γg ⋅ ∇(p)) * jump(n_Γg ⋅ ∇(q))
 
 ϕ_ΩINS(q, t) = (β1 * h^2) * ∇(q) ⋅ f(t) # TO BE DELETED ONCE USING THE REAL RHS FOR INS (WHICH IS ZERO)
@@ -195,24 +198,24 @@ function SolveStokes(t)
 function A_Ω(X, Y)
   u, p = X
   v, q = Y
-  α * m_Ω(u, v) + a_Ω(u, v) + b_Ω(u, q) + b_Ω(v, p) - α * sm_Ω(u, q) - sb_Ω(p, q)
+  α * m_Ω(u, v) + a_ΩSP(u, v) + b_Ω(u, q) + b_Ω(v, p) - α * sm_Ω(u, q) - sb_Ω(p, q)
 end
 
 function A_Γ(X, Y)
   u, p = X
   v, q = Y
-  a_Γ(u, v) + b_Γ(u, q) + b_Γ(v, p)
+  a_ΓSP(u, v) + b_Γ(u, q) + b_Γ(v, p)
 end
 
 function J_Γg(X, Y)
   u, p = X
   v, q = Y
-  i_Γg(u, v) - j_Γg(p, q)
+  i_ΓgSP(u, v) - j_Γg(p, q)
 end
 
 function L_Ω(Y)
   v, q = Y
-  α * m_Ω(u_MRI_Ω(t), v)  + a_Ω(u_MRI_Ω(t), v) - ϕ_ΩSP(q, t) - q * g(t)
+  α * m_Ω(u_MRI_Ω(t), v)  + a_ΩSP(u_MRI_Ω(t), v) - ϕ_ΩSP(q, t) - q * g(t)
 end
 
 function L_Γ(Y)
@@ -248,14 +251,14 @@ function res_Ω(t,x,xt,y)
   u,p = x
   ut,pt = xt
   v,q = y
-  m_Ω(ut,v) + a_Ω(u,v) + b_Ω(v,p) + b_Ω(u,q) + c_Ω(u,v) - v⋅f(t) + q*g(t) - sm_Ω(ut,q) - sb_Ω(p,q) - sc_Ω(u,q) + ϕ_ΩINS(q,t)
+  m_Ω(ut,v) + a_ΩINS(u,v) + b_Ω(v,p) + b_Ω(u,q) + c_Ω(u,v) - v⋅f(t) + q*g(t) - sm_Ω(ut,q) - sb_Ω(p,q) - sc_Ω(u,q) + ϕ_ΩINS(q,t)
 end
 
 function jac_Ω(t,x,xt,dx,y)
   u, p = x
   du,dp = dx
   v,q = y
-  dc_Ω(u, du, v) + a_Ω(du,v) + b_Ω(v,dp) + b_Ω(du,q) - sb_Ω(dp,q) - dsc_Ω(u,du,q)
+  dc_Ω(u, du, v) + a_ΩINS(du,v) + b_Ω(v,dp) + b_Ω(du,q) - sb_Ω(dp,q) - dsc_Ω(u,du,q)
 end
 
 function jac_tΩ(t,x,xt,dxt,y)
@@ -269,13 +272,13 @@ function res_Γ(t,x,xt,y)
   u,p = x
   ut,pt = xt
   v,q = y
-  a_Γ(u,v)+b_Γ(u,q)+b_Γ(v,p) - restrict(u_projΓ(t),trian_Γ) ⊙( (γ/h)*v - n_Γ⋅∇(v) + q*n_Γ )
+  a_ΓINS(u,v)+b_Γ(u,q)+b_Γ(v,p) - restrict(u_projΓ(t),trian_Γ) ⊙( ν*(γ/h)*v - ν*n_Γ⋅∇(v) + q*n_Γ )
 end
 
 function jac_Γ(t,x,xt,dx,y)
   du,dp = dx
   v,q = y
-  a_Γ(du,v)+b_Γ(du,q)+b_Γ(v,dp)
+  a_ΓINS(du,v)+b_Γ(du,q)+b_Γ(v,dp)
 end
 
 function jac_tΓ(t,x,xt,dxt,y)
@@ -289,19 +292,19 @@ function res_Γg(t,x,xt,y)
   u,p = x
   ut,pt = xt
   v,q = y
-  i_Γg(u,v) - j_Γg(p,q)
+  i_ΓgINS(u,v) - j_Γg(p,q)
 end
 
 function jac_Γg(t,x,xt,dx,y)
   du,dp = dx
   v,q = y
-  i_Γg(du,v) - j_Γg(dp,q)
+  i_ΓgINS(du,v) - j_Γg(dp,q)
 end
 
 function jac_tΓg(t,x,xt,dxt,y)
   dut,dpt = dxt
   v,q = y
-  0*i_Γg(dut,v)
+  0*i_ΓgINS(dut,v)
 end
 
 xh0 = interpolate_everywhere([uh_0,ph_0],X(0.0))
@@ -312,12 +315,16 @@ t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
 
 op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
 
+#=
 nls = NLSolver(
     show_trace = false,
     method = :newton,
     linesearch = BackTracking(),
 )
-odes = ThetaMethod(nls, dt, θ)
+=#
+
+ls=LUSolver()
+odes = ThetaMethod(ls, dt, θ)
 solver = TransientFESolver(odes)
 sol_t = solve(solver, op, xh0, t0, tF)
 
