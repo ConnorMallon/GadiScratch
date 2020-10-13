@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VTKFile type="Collection" version="1.0" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">
+  <Collection>
+    <DataSet timestep="46.08" part="0" file="fields_1.vtu"/>
+    <DataSet timestep="92.16" part="0" file="fields_2.vtu"/>
+    <DataSet timestep="138.24" part="0" file="fields_3.vtu"/>
+    <DataSet timestep="184.32" part="0" file="fields_4.vtu"/>
+    <DataSet timestep="230.39999999999998" part="0" file="fields_5.vtu"/>
+    <DataSet timestep="276.47999999999996" part="0" file="fields_6.vtu"/>
+    <DataSet timestep="322.55999999999995" part="0" file="fields_7.vtu"/>
+    <DataSet timestep="368.63999999999993" part="0" file="fields_8.vtu"/>
+    <DataSet timestep="414.7199999999999" part="0" file="fields_9.vtu"/>
+    <DataSet timestep="460.7999999999999" part="0" file="fields_10.vtu"/>
+    <DataSet timestep="506.8799999999999" part="0" file="fields_11.vtu"/>
+    <DataSet timestep="552.9599999999999" part="0" file="fields_12.vtu"/>
+    <DataSet timestep="599.04" part="0" file="fields_13.vtu"/>
+    <DataSet timestep="645.12" part="0" file="fields_14.vtu"/>
+    <DataSet timestep="691.2" part="0" file="fields_15.vtu"/>
+    <DataSet timestep="737.2800000000001" part="0" file="fields_16.vtu"/>
+    <DataSet timestep="783.3600000000001" part="0" file="fields_17.vtu"/>
+    <DataSet timestep="829.4400000000002" part="0" file="fields_18.vtu"/>
+    <DataSet timestep="875.5200000000002" part="0" file="fields_19.vtu"/>
+  </Collection>
+</VTKFile>

@@ -27,10 +27,11 @@ using CSV
 # #=
 #Space Convergence Parameters
 θ = 1
-ns = [16,20,28,42,74]
-dts = 1 #[0.2,0.1,0.05]
-SNRs = [1e10,100,50,20,5]
-n_tests = 20 #20
+ns = [16,20,28,42]#,74]
+dts = 0.0001#[0.2,0.1,0.05,0.025,0.0125]
+tF= 0.0001
+SNRs = [1e10,100]#,50,20,5]
+n_tests = 10 #20
 # =#
 
  #=
@@ -51,8 +52,8 @@ if length(dts) > 1
  dimδs = dts
  dimname = "Time"
 
- u(x,t) = VectorValue(x[1]-x[2],-x[1]+x[2])*cos(k*t)
- p(x,t) = (x[1]+x[2])*cos(k*t)
+ u(x,t) = VectorValue(x[1]+x[2],-x[1]-x[2])*cos(k*t)
+ p(x,t) = (x[1]-x[2])*cos(k*t)
 
 elseif length(ns) > 1
  @assert ( length(dts) == 1 )
@@ -61,7 +62,7 @@ elseif length(ns) > 1
  dimname = "Space"
 
  u(x,t) = VectorValue(-cos(k*x[1])*sin(k*x[2]),sin(k*x[1])*cos(k*x[2]))*t
- p(x,t) = k*sin(k*x[1])*sin(k*x[2])*t
+ p(x,t) = k*(sin(k*x[1])-sin(k*x[2]))*t
 else
  throw(InputError("choose 1 dimension to test (dt or h) and set that to a lengh > 1 vector and the other dim to a length = 1 vector"))
 end
@@ -74,7 +75,12 @@ p(x,t) = (x[1] + x[2])
 
 #Laws
 @law conv(u, ∇u) = (∇u') ⋅ u
-@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
+@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) + conv(du, ∇u)
+
+#Physical constants
+ρ = 1.06e-3 #kg/cm^3 
+μ = 3.50e-5  #kg/cm.s
+ν = μ/ρ 
 
 u(t::Real) = x -> u(x,t)
 #∂tu(x,t) = ∂tu(t)(x)
@@ -93,7 +99,7 @@ g(t) = x -> (∇⋅u(t))(x)
 
 order = 1
 
-function run_test(n,dt,SNR,θ)
+function run_test(n,dt,tF,SNR,θ)
 
 # Select geometry
 R = 0.7
@@ -315,16 +321,16 @@ t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
 
 op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
 
-#=
+# #=
 nls = NLSolver(
     show_trace = false,
     method = :newton,
     linesearch = BackTracking(),
 )
-=#
+# =#
 
 ls=LUSolver()
-odes = ThetaMethod(ls, dt, θ)
+odes = ThetaMethod(nls, dt, θ)
 solver = TransientFESolver(odes)
 sol_t = solve(solver, op, xh0, t0, tF)
 
@@ -362,7 +368,7 @@ end #function INS
 
 #running solvers
 t0 = 0.0
-tF = 1.0
+tF = tF
 dt = dt
 
 println("Solving Stokes Projector (n = $(n)) (dt = $(dt))")
@@ -386,7 +392,7 @@ println("Solving Navier Stokes")
 
 end #function (whole method)
 
-function conv_test(ns,dts,SNR,θ)
+function conv_test(ns,dts,tF,SNR,θ)
 
   eul2s = Float64[]
   epl2s = Float64[]
@@ -395,7 +401,7 @@ function conv_test(ns,dts,SNR,θ)
   for n in ns
     for dt in dts
 
-      eul2, epl2, h = run_test(n,dt,SNR,θ)
+      eul2, epl2, h = run_test(n,dt,tF,SNR,θ)
 
       push!(eul2s,eul2)
       push!(epl2s,epl2)
@@ -408,14 +414,14 @@ function conv_test(ns,dts,SNR,θ)
 end
 
 #Initialising save data
-OutputDataInit = DataFrame(dimδ = [ _ for _ in dimδs])
+OutputData = DataFrame(dimδ = [ _ for _ in dimδs])
 plot()
 
 #Running Method for different SNR values
 for SNR in SNRs
   println(SNR)
   #Running tests
-  conv_test_results = [conv_test(ns,dts,SNR,θ) for _ in 1:n_tests]
+  conv_test_results = [conv_test(ns,dts,tF,SNR,θ) for _ in 1:n_tests]
   eul2s = (1/n_tests)*(sum( [conv_test_results[i][1] for i in 1:n_tests] ) )
   epl2s = (1/n_tests)*(sum( [conv_test_results[i][2] for i in 1:n_tests] ) )
   global hs = conv_test_results[1][3]
@@ -441,7 +447,7 @@ for SNR in SNRs
   #Tabulating Data
   df_i = DataFrame(eu = eul2s, ep = epl2s)
   df_i = rename(df_i, Dict("eu" => "eu SNR=$(SNR)", "ep" => "ep SNR=$(SNR)")) #making column name include the SNR value
-  global OutputData = hcat(OutputDataInit,df_i,makeunique=true)
+  global OutputData = hcat(OutputData,df_i,makeunique=true)
   OutputData
 end
 

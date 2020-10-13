@@ -1,0 +1,255 @@
+1.0e10
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+100.0
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 16) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 20) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 28) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+Solving Stokes Projector (n = 42) (dt = 0.0001)
+Solving Navier Stokes
+_t_n = 0.0001
+
+======================================================================================
+                  Resource Usage on 2020-10-13 12:24:00:
+   Job Id:             12295069.gadi-pbs
+   Project:            bt62
+   Exit Status:        0
+   Service Units:      0.38
+   NCPUs Requested:    1                      NCPUs Used: 1               
+                                           CPU Time Used: 00:11:20                                   
+   Memory Requested:   4.0GB                 Memory Used: 1.71GB          
+   Walltime requested: 48:00:00            Walltime Used: 00:11:27        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

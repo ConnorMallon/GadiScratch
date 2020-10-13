@@ -1,0 +1,9 @@
+connect: Connection refused
+GKS: can't connect to GKS socket application
+
+GKS: Open failed in routine OPEN_WS
+GKS: GKS not in proper state. GKS must be either in the state WSOP or WSAC in routine ACTIVATE_WS
+ Activating environment at `/scratch/bt62/cm8825/Convergence/Project.toml`
+┌ Warning: `interpolate_everywhere(fs::SingleFieldFESpace, object)` is deprecated, use `interpolate_everywhere(object, fs::SingleFieldFESpace)` instead.
+│   caller = (::Main.FullMethod.var"#u_MRI#27"{Gridap.FESpaces.ExtendedFESpace,Gridap.FESpaces.SingleFieldFEFunction{Gridap.CellData.GenericCellField{true,()}}})(::Float64) at FullMethodConvergence.jl:198
+└ @ Main.FullMethod /scratch/bt62/cm8825/Convergence/FullMethodConvergence.jl:198
