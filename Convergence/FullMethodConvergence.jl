@@ -28,8 +28,8 @@ using CSV
 #Space Convergence Parameters
 θ = 1
 ns = [16,20,28,42]#,74]
-dts = 0.0001#[0.2,0.1,0.05,0.025,0.0125]
-tF= 0.0001
+dts = 0.01#[0.2,0.1,0.05,0.025,0.0125]
+tF= 0.01
 SNRs = [1e10,100]#,50,20,5]
 n_tests = 10 #20
 # =#
@@ -75,7 +75,7 @@ p(x,t) = (x[1] + x[2])
 
 #Laws
 @law conv(u, ∇u) = (∇u') ⋅ u
-@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) + conv(du, ∇u)
+@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
 
 #Physical constants
 ρ = 1.06e-3 #kg/cm^3 
@@ -330,7 +330,7 @@ nls = NLSolver(
 # =#
 
 ls=LUSolver()
-odes = ThetaMethod(nls, dt, θ)
+odes = ThetaMethod(ls, dt, θ)
 solver = TransientFESolver(odes)
 sol_t = solve(solver, op, xh0, t0, tF)
 
@@ -458,7 +458,7 @@ if dimδ == "n"
 end
 
 #Saving data
-folderName = "Results"
+folderName = "Results_SI"
 PlotFileName = "$(dimname)ConvergencePlot"
 DataFileName = "$(dimname)ConvergenceData"
 
