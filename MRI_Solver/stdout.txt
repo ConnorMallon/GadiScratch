@@ -22,14 +22,14 @@ i = 18
 i = 19
 
 ======================================================================================
-                  Resource Usage on 2020-10-09 10:24:53:
-   Job Id:             12136572.gadi-pbs
+                  Resource Usage on 2020-10-14 18:09:12:
+   Job Id:             12358259.gadi-pbs
    Project:            bt62
    Exit Status:        0
-   Service Units:      13.57
+   Service Units:      13.25
    NCPUs Requested:    4                      NCPUs Used: 4               
-                                           CPU Time Used: 01:41:41                                   
-   Memory Requested:   16.0GB                Memory Used: 11.4GB          
-   Walltime requested: 20:00:00            Walltime Used: 01:41:48        
+                                           CPU Time Used: 01:39:16                                   
+   Memory Requested:   16.0GB                Memory Used: 11.52GB         
+   Walltime requested: 20:00:00            Walltime Used: 01:39:23        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

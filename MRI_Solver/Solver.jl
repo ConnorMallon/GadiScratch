@@ -27,6 +27,7 @@ using Plots
 using CSV
 using JSON
 using WriteVTK
+using Gridap.Algebra: NewtonRaphsonSolver
 
 #Laws
 @law conv(u, ∇u) = (∇u') ⋅ u
@@ -260,8 +261,8 @@ t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
 
 op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
 
-ls=LUSolver()
-#nls = NewtonRaphsonSolver(ls,1e50,2) 
+ls=LUSolver() 
+nls = NewtonRaphsonSolver(ls,1e99,1)
 
 odes = ThetaMethod(ls, dt, θ)
 solver = TransientFESolver(odes)

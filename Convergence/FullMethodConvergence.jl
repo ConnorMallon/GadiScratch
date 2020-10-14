@@ -23,25 +23,27 @@ using GridapEmbedded.Interfaces: cut
 using DataFrames
 using Plots
 using CSV
-
-# #=
-#Space Convergence Parameters
-θ = 1
-ns = [16,20,28,42]#,74]
-dts = 0.01#[0.2,0.1,0.05,0.025,0.0125]
-tF= 0.01
-SNRs = [1e10,100]#,50,20,5]
-n_tests = 10 #20
-# =#
+using Gridap.Algebra: NewtonRaphsonSolver
 
  #=
+#Space Convergence Parameters
+θ = 1
+ns = [16,20,28,42,56]
+dts = 0.025#[0.2,0.1,0.05,0.025,0.0125]
+tF= 1#0.01
+SNRs = [1e10,100,50,20,5]
+n_tests = 20 #20
+ =#
+
+# #=
 #Time Convergence Parameters
 θ = 1
-ns = 16
+ns = 24
 dts = [0.2,0.1,0.05,0.025,0.0125]
+tF= 1
 SNRs = [1e10,100,50,20,5]
-n_tests = 20 #30
- =#
+n_tests = 30 #30
+# =#
 
 #Manufactured solution
 k=2*pi
@@ -321,16 +323,18 @@ t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
 
 op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
 
-# #=
+
+ls=LUSolver()
+ #=
 nls = NLSolver(
     show_trace = false,
     method = :newton,
     linesearch = BackTracking(),
 )
-# =#
+ =#
+nls = NewtonRaphsonSolver(ls,1e99,1)
 
-ls=LUSolver()
-odes = ThetaMethod(ls, dt, θ)
+odes = ThetaMethod(nls, dt, θ)
 solver = TransientFESolver(odes)
 sol_t = solve(solver, op, xh0, t0, tF)
 
@@ -442,7 +446,7 @@ for SNR in SNRs
       shape=:auto,
       xlabel=x_plot_name,
       ylabel="L2 error norm",
-      title = "Method_Convergence_$(x_plot)")
+      title = "Method_Convergence_1_$(x_plot)")
 
   #Tabulating Data
   df_i = DataFrame(eu = eul2s, ep = epl2s)
@@ -458,7 +462,7 @@ if dimδ == "n"
 end
 
 #Saving data
-folderName = "Results_SI"
+folderName = "Results"
 PlotFileName = "$(dimname)ConvergencePlot"
 DataFileName = "$(dimname)ConvergenceData"
 
