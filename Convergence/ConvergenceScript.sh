@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -P bt62
 #PBS -q normal
-#PBS -l walltime=15:00:00
+#PBS -l walltime=48:00:00
 #PBS -l ncpus=1
 #PBS -l mem=4gb
 #PBS -N Convergence.jl

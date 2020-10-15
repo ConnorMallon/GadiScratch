@@ -190,94 +190,10 @@ uh, ph = solve(op)
 
 end # function Stokes
 
-function SolveNavierStokes(u_projΓ,uh_0,ph_0)
-
-#Interior term collection
-function res_Ω(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  m_Ω(ut,v) + a_ΩINS(u,v) + b_Ω(v,p) + b_Ω(u,q) + c_Ω(u,v) - v⋅f(t) + q*g(t) - sm_Ω(ut,q) - sb_Ω(p,q) - sc_Ω(u,q) + ϕ_ΩINS(q,t)
-end
-
-function jac_Ω(t,x,xt,dx,y)
-  u, p = x
-  du,dp = dx
-  v,q = y
-  dc_Ω(u, du, v) + a_ΩINS(du,v) + b_Ω(v,dp) + b_Ω(du,q) - sb_Ω(dp,q) - dsc_Ω(u,du,q)
-end
-
-function jac_tΩ(t,x,xt,dxt,y)
-  dut,dpt = dxt
-  v,q = y
-  m_Ω(dut,v) - sm_Ω(dut,q)
-end
-
-#Boundary term collection
-function res_Γ(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  a_ΓINS(u,v)+b_Γ(u,q)+b_Γ(v,p) - restrict(u_projΓ(t),trian_Γ) ⊙( ν*(γ/h)*v - ν*n_Γ⋅∇(v) + q*n_Γ )
-end
-
-function jac_Γ(t,x,xt,dx,y)
-  du,dp = dx
-  v,q = y
-  a_ΓINS(du,v)+b_Γ(du,q)+b_Γ(v,dp)
-end
-
-function jac_tΓ(t,x,xt,dxt,y)
-  dut,dpt = dxt
-  v,q = y
-  0*m_Ω(dut,v)
-end
-
-#Skeleton term collection
-function res_Γg(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  i_ΓgINS(u,v) - j_Γg(p,q)
-end
-
-function jac_Γg(t,x,xt,dx,y)
-  du,dp = dx
-  v,q = y
-  i_ΓgINS(du,v) - j_Γg(dp,q)
-end
-
-function jac_tΓg(t,x,xt,dxt,y)
-  dut,dpt = dxt
-  v,q = y
-  0*i_ΓgINS(dut,v)
-end
-
-xh0 = interpolate_everywhere([uh_0,ph_0],X(0.0))
-
-t_Ω = FETerm(res_Ω,jac_Ω,jac_tΩ,trian_Ω,quad_Ω)
-t_Γ = FETerm(res_Γ,jac_Γ,jac_tΓ,trian_Γ,quad_Γ)
-t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
-
-op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
-
-ls=LUSolver() 
-nls = NewtonRaphsonSolver(ls,1e99,1)
-
-odes = ThetaMethod(nls, dt, θ)
-solver = TransientFESolver(odes)
-sol_t = solve(solver, op, xh0, t0, tF)
-
-(sol_t)
-
-end #function INS
-
 function writePVD(filePath, trian_Ω, sol; append=false)
     outfiles = paraview_collection(filePath, append=append) do pvd
-        for (i, (xh, t)) in enumerate(sol)
-            @show i
-            uh = restrict(xh[1],trian_Ω)
-            ph = restrict(xh[2],trian_Ω)
+        for i in 1:n_t
+            uh, ph = SolveStokes(i)
             pvd[t] = createvtk(
                 trian_Ω,
                 filePath * "_$i.vtu",
@@ -287,30 +203,21 @@ function writePVD(filePath, trian_Ω, sol; append=false)
     end
 end
 
-println("Solving Stokes Projector")
-u_projΓ_vector = []
-uh_0,ph_0 = SolveStokes(0)
-push!(u_projΓ_vector,uh_0)
-
 dtss = []
-for i in 1:n_t
+for i in 0:n_t
   u_proj_t,p_proj_t = SolveStokes(i)
+  writevtk()
   push!(u_projΓ_vector,u_proj_t)
 end
 
-uh = u_projΓ_vector
-u_projΓ(t) = u_projΓ_vector[Int(round((t/dt)+1,digits=7))]
-
 ### Initialize Paraview files
-folderName = "ins-results_TESTING"
+folderName = "Projector_Results"
 fileName = "fields"
+
 if !isdir(folderName)
     mkdir(folderName)
 end
 filePath = join([folderName, fileName], "/")
-
-println("Solving Navier Stokes")
-sol_t = SolveNavierStokes(u_projΓ,uh_0,ph_0)
 
 println("Writing Solution")
 writePVD(filePath, trian_Ω, sol_t, append=true)

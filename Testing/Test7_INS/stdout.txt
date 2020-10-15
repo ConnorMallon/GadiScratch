@@ -1,0 +1,24 @@
+nliter = 1
+1
+(m, m0) = (1.6791571627210552e-16, 0.5122555743013159)
+1.6791571627210552e-16
+0.5122555743013159
+nliter = 1
+1
+(m, m0) = (1.6791571627210552e-16, 0.5122555743013159)
+1.6791571627210552e-16
+0.5122555743013159
+"something" = "something"
+
+======================================================================================
+                  Resource Usage on 2020-10-15 10:59:04:
+   Job Id:             12393863.gadi-pbs
+   Project:            bt62
+   Exit Status:        0
+   Service Units:      0.17
+   NCPUs Requested:    1                      NCPUs Used: 1               
+                                           CPU Time Used: 00:05:06                                   
+   Memory Requested:   4.0GB                 Memory Used: 1.89GB          
+   Walltime requested: 00:20:00            Walltime Used: 00:05:13        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

@@ -1,0 +1,4 @@
+ Activating environment at `/scratch/bt62/cm8825/Testing/Test7_INS/Project.toml`
+┌ Warning: `interpolate_everywhere(fs::MultiFieldFESpace, object)` is deprecated, use `interpolate_everywhere(object, fs::MultiFieldFESpace)` instead.
+│   caller = top-level scope at INS.jl:181
+└ @ Core /scratch/bt62/cm8825/Testing/Test7_INS/INS.jl:181

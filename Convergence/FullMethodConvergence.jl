@@ -25,17 +25,17 @@ using Plots
 using CSV
 using Gridap.Algebra: NewtonRaphsonSolver
 
- #=
+# #=
 #Space Convergence Parameters
 θ = 1
 ns = [16,20,28,42,56]
-dts = 0.025#[0.2,0.1,0.05,0.025,0.0125]
+dts = 0.05#[0.2,0.1,0.05,0.025,0.0125]
 tF= 1#0.01
 SNRs = [1e10,100,50,20,5]
-n_tests = 20 #20
- =#
+n_tests = 50 #20
+# =#
 
-# #=
+ #=
 #Time Convergence Parameters
 θ = 1
 ns = 24
@@ -43,7 +43,7 @@ dts = [0.2,0.1,0.05,0.025,0.0125]
 tF= 1
 SNRs = [1e10,100,50,20,5]
 n_tests = 30 #30
-# =#
+ =#
 
 #Manufactured solution
 k=2*pi
@@ -462,7 +462,7 @@ if dimδ == "n"
 end
 
 #Saving data
-folderName = "Results"
+folderName = "Results_q"
 PlotFileName = "$(dimname)ConvergencePlot"
 DataFileName = "$(dimname)ConvergenceData"
 

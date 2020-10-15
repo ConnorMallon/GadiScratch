@@ -2,3 +2,23 @@
 ┌ Warning: `CSV.read(input; kw...)` is deprecated in favor of `using DataFrames; CSV.read(input, DataFrame; kw...)
 │   caller = read at CSV.jl:40 [inlined]
 └ @ Core ~/.julia/packages/CSV/MKemC/src/CSV.jl:40
+ERROR: LoadError: This line of code cannot be reached
+Stacktrace:
+ [1] error(::String) at ./error.jl:33
+ [2] macro expansion at /home/565/cm8825/.julia/dev/Gridap/src/Helpers/Macros.jl:47 [inlined]
+ [3] _solve_nr!(::Array{Float64,1}, ::SparseArrays.SparseMatrixCSC{Float64,Int64}, ::Array{Float64,1}, ::Array{Float64,1}, ::Gridap.Algebra.LUNumericalSetup{SuiteSparse.UMFPACK.UmfpackLU{Float64,Int64}}, ::Gridap.Algebra.NewtonRaphsonSolver, ::GridapODEs.ODETools.ThetaMethodNonlinearOperator) at /home/565/cm8825/.julia/dev/Gridap/src/Algebra/NLSolvers.jl:69
+ [4] solve!(::Array{Float64,1}, ::Gridap.Algebra.NewtonRaphsonSolver, ::GridapODEs.ODETools.ThetaMethodNonlinearOperator, ::Nothing) at /home/565/cm8825/.julia/dev/Gridap/src/Algebra/NLSolvers.jl:30
+ [5] solve_step!(::Array{Float64,1}, ::GridapODEs.ODETools.ThetaMethod, ::GridapODEs.TransientFETools.ODEOpFromFEOp{GridapODEs.ODETools.Nonlinear}, ::Array{Float64,1}, ::Float64, ::Nothing) at /home/565/cm8825/.julia/packages/GridapODEs/EbG9F/src/ODETools/ThetaMethod.jl:44
+ [6] solve_step!(::Array{Float64,1}, ::GridapODEs.ODETools.ThetaMethod, ::GridapODEs.TransientFETools.ODEOpFromFEOp{GridapODEs.ODETools.Nonlinear}, ::Array{Float64,1}, ::Float64) at /home/565/cm8825/.julia/packages/GridapODEs/EbG9F/src/ODETools/ODESolvers.jl:18
+ [7] iterate(::GridapODEs.ODETools.GenericODESolution) at /home/565/cm8825/.julia/packages/GridapODEs/EbG9F/src/ODETools/ODESolutions.jl:47
+ [8] iterate(::GridapODEs.TransientFETools.TransientFESolution) at /home/565/cm8825/.julia/packages/GridapODEs/EbG9F/src/TransientFETools/TransientFESolutions.jl:31
+ [9] iterate at ./iterators.jl:139 [inlined]
+ [10] iterate at ./iterators.jl:138 [inlined]
+ [11] (::Main.FullMethod.var"#16#17"{String,Gridap.Geometry.AppendedTriangulation{3,3},GridapODEs.TransientFETools.TransientFESolution})(::WriteVTK.CollectionFile) at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:277
+ [12] paraview_collection(::Main.FullMethod.var"#16#17"{String,Gridap.Geometry.AppendedTriangulation{3,3},GridapODEs.TransientFETools.TransientFESolution}, ::String; kwargs::Base.Iterators.Pairs{Symbol,Bool,Tuple{Symbol},NamedTuple{(:append,),Tuple{Bool}}}) at /home/565/cm8825/.julia/packages/WriteVTK/3XdBx/src/WriteVTK.jl:147
+ [13] #writePVD#15 at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:276 [inlined]
+ [14] top-level scope at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:316
+ [15] include(::Module, ::String) at ./Base.jl:377
+ [16] exec_options(::Base.JLOptions) at ./client.jl:288
+ [17] _start() at ./client.jl:484
+in expression starting at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:316
