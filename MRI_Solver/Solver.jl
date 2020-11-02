@@ -42,7 +42,7 @@ using Gridap.Algebra: NewtonRaphsonSolver
 n_t = 2#19
 
 t0 = 0.0
-dt = 46.08
+dt = 46.08e-3 #ms
 tF = dt*n_t
 
 #import Level_Set
