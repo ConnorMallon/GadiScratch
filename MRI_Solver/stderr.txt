@@ -14,11 +14,11 @@ Stacktrace:
  [8] iterate(::GridapODEs.TransientFETools.TransientFESolution) at /home/565/cm8825/.julia/packages/GridapODEs/EbG9F/src/TransientFETools/TransientFESolutions.jl:31
  [9] iterate at ./iterators.jl:139 [inlined]
  [10] iterate at ./iterators.jl:138 [inlined]
- [11] (::Main.FullMethod.var"#16#17"{String,Gridap.Geometry.AppendedTriangulation{3,3},GridapODEs.TransientFETools.TransientFESolution})(::WriteVTK.CollectionFile) at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:277
- [12] paraview_collection(::Main.FullMethod.var"#16#17"{String,Gridap.Geometry.AppendedTriangulation{3,3},GridapODEs.TransientFETools.TransientFESolution}, ::String; kwargs::Base.Iterators.Pairs{Symbol,Bool,Tuple{Symbol},NamedTuple{(:append,),Tuple{Bool}}}) at /home/565/cm8825/.julia/packages/WriteVTK/3XdBx/src/WriteVTK.jl:147
- [13] #writePVD#15 at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:276 [inlined]
- [14] top-level scope at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:316
+ [11] (::Main.FullMethod.var"#20#21"{String,Gridap.Geometry.AppendedTriangulation{3,3},GridapODEs.TransientFETools.TransientFESolution})(::WriteVTK.CollectionFile) at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:316
+ [12] paraview_collection(::Main.FullMethod.var"#20#21"{String,Gridap.Geometry.AppendedTriangulation{3,3},GridapODEs.TransientFETools.TransientFESolution}, ::String; kwargs::Base.Iterators.Pairs{Symbol,Bool,Tuple{Symbol},NamedTuple{(:append,),Tuple{Bool}}}) at /home/565/cm8825/.julia/packages/WriteVTK/3XdBx/src/WriteVTK.jl:147
+ [13] #writePVD#19 at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:315 [inlined]
+ [14] top-level scope at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:355
  [15] include(::Module, ::String) at ./Base.jl:377
  [16] exec_options(::Base.JLOptions) at ./client.jl:288
  [17] _start() at ./client.jl:484
-in expression starting at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:316
+in expression starting at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:355

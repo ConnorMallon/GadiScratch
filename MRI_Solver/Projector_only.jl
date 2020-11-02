@@ -2,7 +2,6 @@
 
 module FullMethod
 
-
 using Pkg
 Pkg.activate(".")
 
@@ -47,6 +46,7 @@ tF = dt*n_t
 
 #import Level_Set
 Level_Set = JSON.parsefile("Data/Distance_map.json")
+
 #Storing data into variables
 dimensions=Level_Set["dimensions"].-1 #-1 for conversion from nodes to number of cells
 spacing=Level_Set["spacing"]
@@ -56,6 +56,7 @@ Level_Set = convert(Vector{Float64},Level_Set)
 #Forcing terms
 f(t) = VectorValue(0.0,0.0,0.0)
 g(t) = 0.0
+
 #defining background grid
 domain = (0.0, spacing[1]*dimensions[1], 0.0, spacing[2]*dimensions[2], 0.0 ,spacing[3]*dimensions[3])
 partition=(dimensions[1],dimensions[2],dimensions[3])
@@ -65,25 +66,35 @@ D=length(dimensions)
 h = maximum(spacing)
 
 # Setup model from level set
-point_to_coords=collect1d(get_node_coordinates(bgmodel))
-geo=DiscreteGeometry(Level_Set,point_to_coords,name="")
+point_to_coords = collect1d(get_node_coordinates(bgmodel))
+geo_aorta = DiscreteGeometry(Level_Set,point_to_coords,name="")
+
+# Cut Neumann EmbeddedBoundary
+geo_notcube =  ! cube(;L=30,x0=Point(105,325,25),name="notcube")
+geo_notcube_x = discretize(geo_notcube,bgmodel)
+
+# intersect aorta and not_cube
 cutter=LevelSetCutter()
-cutgeo=cut(cutter,bgmodel,geo)
-model=DiscreteModel(cutgeo)
+geo_sliced_aorta = intersect(geo_aorta,geo_notcube_x) 
+cutgeo_sliced_aorta = cut(cutter,bgmodel,geo_sliced_aorta)
+model = DiscreteModel(cutgeo_sliced_aorta)
 
 # Setup integration meshes
-trian_Ω = Triangulation(cutgeo)
-trian_Γ = EmbeddedBoundary(cutgeo)
-trian_Γg = GhostSkeleton(cutgeo)
+trian_Ω = Triangulation(cutgeo_sliced_aorta)
+trian_Γ = EmbeddedBoundary(cutgeo_sliced_aorta, geo_sliced_aorta, geo_aorta) # nitsche
+trian_Γn = EmbeddedBoundary(cutgeo_sliced_aorta, geo_sliced_aorta, geo_notcube_x) #neumann
+trian_Γg = GhostSkeleton(cutgeo_sliced_aorta)
 
 # Setup normal vectors
 n_Γ = get_normal_vector(trian_Γ)
+n_Γn = get_normal_vector(trian_Γn)
 n_Γg = get_normal_vector(trian_Γg)
 
 # Setup cuadratures
 order = 1
 quad_Ω = CellQuadrature(trian_Ω,2*order)
 quad_Γ = CellQuadrature(trian_Γ,2*order)
+quad_Γn = CellQuadrature(trian_Γn,2*order)
 quad_Γg = CellQuadrature(trian_Γg,2*order)
 
 # Setup FESpace
@@ -107,7 +118,6 @@ Y = MultiFieldFESpace([V,Q])
 β3 = 0.05
 γ = 10.0
 α = h^-2
-
 
 # Terms
 m_Ω(u, v) = u ⊙ v
@@ -179,35 +189,37 @@ function L_Γ(Y)
   u_MRI_Γ(t) ⊙ ((γ / h) * v - n_Γ ⋅ ∇(v) + q * n_Γ)  - v⋅(n_Γ⋅∇(u_MRI_Γ(t)))
 end
 
+function l_Γn(y)
+  v,q = y
+  0* q * g(t) #dummy 
+end
+
 # FE problem
 t_Ω = AffineFETerm(A_Ω,L_Ω,trian_Ω,quad_Ω)
 t_Γ = AffineFETerm(A_Γ,L_Γ,trian_Γ,quad_Γ)
+t_Γn = FESource(l_Γn,trian_Γn,quad_Γn)
 t_Γg = LinearFETerm(J_Γg,trian_Γg,quad_Γg)
-op = AffineFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
+op = AffineFEOperator(X,Y,t_Ω,t_Γ,t_Γn,t_Γg)
 uh, ph = solve(op)
 
 (uh,ph)
 
 end # function Stokes
 
-function writePVD(filePath, trian_Ω, sol; append=false)
-    outfiles = paraview_collection(filePath, append=append) do pvd
-        for i in 1:n_t
-            uh, ph = SolveStokes(i)
-            pvd[t] = createvtk(
-                trian_Ω,
-                filePath * "_$i.vtu",
-                cellfields = ["uh" => uh, "ph" => ph],
-            )
-        end
-    end
-end
-
-dtss = []
-for i in 0:n_t
-  u_proj_t,p_proj_t = SolveStokes(i)
-  writevtk()
-  push!(u_projΓ_vector,u_proj_t)
+function writePVD(filePath, trian_Ω; append=false)
+  outfiles = paraview_collection(filePath, append=append) do pvd
+      for i in 0:n_t
+          @show i
+          uh, ph = SolveStokes(i)
+          uh = restrict(uh,trian_Ω)
+          ph = restrict(ph,trian_Ω)
+          pvd[i] = createvtk(
+              trian_Ω,
+              filePath * "_$i.vtu",
+              cellfields = ["uh" => uh, "ph" => ph],
+          )
+      end
+  end
 end
 
 ### Initialize Paraview files
@@ -220,6 +232,7 @@ end
 filePath = join([folderName, fileName], "/")
 
 println("Writing Solution")
-writePVD(filePath, trian_Ω, sol_t, append=true)
+writePVD(filePath, trian_Ω; append=false)
+
 
 end #module
