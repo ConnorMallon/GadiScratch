@@ -3,29 +3,29 @@ Solving Navier Stokes
 Writing Solution
 nliter = 1
 1
-adding (m, m0) = (4.7898858995284253e8, 58554.667685375935)
-4.7898858995284253e8
+(m, m0) = (3.271935295711682e12, 58554.667685375935)
+3.271935295711682e12
 58554.667685375935
 nliter = 2
 2
-(m, m0) = (5.352688900745606e7, 58554.667685375935)
-5.352688900745606e7
+(m, m0) = (3.599194643801218e9, 58554.667685375935)
+3.599194643801218e9
 58554.667685375935
 nliter = 3
 3
-(m, m0) = (1.1422393110984108e8, 58554.667685375935)
-1.1422393110984108e8
+(m, m0) = (2.684900486953286e8, 58554.667685375935)
+2.684900486953286e8
 58554.667685375935
 
 ======================================================================================
-                  Resource Usage on 2020-11-02 13:11:24:
-   Job Id:             13125083.gadi-pbs
+                  Resource Usage on 2020-11-03 10:09:22:
+   Job Id:             13163322.gadi-pbs
    Project:            bt62
    Exit Status:        1
-   Service Units:      8.87
+   Service Units:      9.21
    NCPUs Requested:    7                      NCPUs Used: 7               
-                                           CPU Time Used: 00:38:00                                   
-   Memory Requested:   28.0GB                Memory Used: 14.66GB         
-   Walltime requested: 20:00:00            Walltime Used: 00:38:02        
+                                           CPU Time Used: 00:39:22                                   
+   Memory Requested:   28.0GB                Memory Used: 12.37GB         
+   Walltime requested: 20:00:00            Walltime Used: 00:39:28        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

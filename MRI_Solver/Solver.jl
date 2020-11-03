@@ -42,7 +42,7 @@ using Gridap.Algebra: NewtonRaphsonSolver
 n_t = 2#19
 
 t0 = 0.0
-dt = 46.08e-3 #ms
+dt = 46.08e-3 #s
 tF = dt*n_t
 
 #import Level_Set
@@ -59,7 +59,7 @@ f(t) = VectorValue(0.0,0.0,0.0)
 g(t) = 0.0
 
 #defining background grid
-domain = (0.0, spacing[1]*dimensions[1], 0.0, spacing[2]*dimensions[2], 0.0 ,spacing[3]*dimensions[3])
+domain = (0.0, spacing[1]*dimensions[1], 0.0, spacing[2]*dimensions[2], 0.0 ,spacing[3]*dimensions[3])./10 #in cm
 partition=(dimensions[1],dimensions[2],dimensions[3])
 
 bgmodel  = simplexify(CartesianDiscreteModel(domain,partition))
