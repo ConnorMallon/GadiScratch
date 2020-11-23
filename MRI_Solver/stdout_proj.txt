@@ -2,33 +2,16 @@ Writing Solution
 i = 0
 i = 1
 i = 2
-i = 3
-i = 4
-i = 5
-i = 6
-i = 7
-i = 8
-i = 9
-i = 10
-i = 11
-i = 12
-i = 13
-i = 14
-i = 15
-i = 16
-i = 17
-i = 18
-i = 19
 
 ======================================================================================
-                  Resource Usage on 2020-11-01 22:21:58:
-   Job Id:             13105133.gadi-pbs
+                  Resource Usage on 2020-11-04 08:41:39:
+   Job Id:             13185355.gadi-pbs
    Project:            bt62
    Exit Status:        0
-   Service Units:      11.38
+   Service Units:      2.36
    NCPUs Requested:    4                      NCPUs Used: 4               
-                                           CPU Time Used: 01:25:14                                   
-   Memory Requested:   16.0GB                Memory Used: 13.84GB         
-   Walltime requested: 20:00:00            Walltime Used: 01:25:22        
+                                           CPU Time Used: 00:17:40                                   
+   Memory Requested:   16.0GB                Memory Used: 12.03GB         
+   Walltime requested: 20:00:00            Walltime Used: 00:17:44        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

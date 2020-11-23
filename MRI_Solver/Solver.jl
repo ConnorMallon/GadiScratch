@@ -50,7 +50,7 @@ Level_Set = JSON.parsefile("Data/Distance_map.json")
 
 #Storing data into variables
 dimensions=Level_Set["dimensions"].-1 #-1 for conversion from nodes to number of cells
-spacing=Level_Set["spacing"]
+spacing=Level_Set["spacing"]*1e-1 #conversion from mm to cm
 Level_Set = Level_Set["scalars"]
 Level_Set = convert(Vector{Float64},Level_Set)
 
@@ -59,7 +59,7 @@ f(t) = VectorValue(0.0,0.0,0.0)
 g(t) = 0.0
 
 #defining background grid
-domain = (0.0, spacing[1]*dimensions[1], 0.0, spacing[2]*dimensions[2], 0.0 ,spacing[3]*dimensions[3])./10 #in cm
+domain = (0.0, spacing[1]*dimensions[1], 0.0, spacing[2]*dimensions[2], 0.0 ,spacing[3]*dimensions[3]) 
 partition=(dimensions[1],dimensions[2],dimensions[3])
 
 bgmodel  = simplexify(CartesianDiscreteModel(domain,partition))
@@ -114,7 +114,8 @@ X = MultiFieldFESpace([U,P])
 Y = MultiFieldFESpace([V,Q])
 
 # Stabilization parameters
-β1 = 0.2
+β1 = 0.5 #PSPG
+
 β2 = 0.1
 β3 = 0.05
 γ = 10.0
@@ -128,10 +129,10 @@ b_Ω(v, p) = -(∇ ⋅ v) * p
 c_Ω(u, v) = v ⊙ conv(u, ∇(u))
 dc_Ω(u, du, v) = v ⊙ dconv(du, ∇(du), u, ∇(u))
 
-sm_Ω(u, q) = (β1 * h^2) * (u ⋅ ∇(q))
-sb_Ω(p, q) = (β1 * h^2) * ∇(p) ⋅ ∇(q)
-sc_Ω(u,q) = (β1*h^2) * conv(u, ∇(u))⋅∇(q)
-dsc_Ω(u,du,q) = (β1*h^2) * ∇(q)⋅dconv(du, ∇(du), u, ∇(u))
+sm_Ω(u, q) = (β1 ) * (u ⋅ ∇(q))
+sb_Ω(p, q) = (β1 ) * ∇(p) ⋅ ∇(q)
+sc_Ω(u,q) = (β1) * conv(u, ∇(u))⋅∇(q)
+dsc_Ω(u,du,q) = (β1) * ∇(q)⋅dconv(du, ∇(du), u, ∇(u))
 
 a_ΓSP(u, v) = ( -(n_Γ ⋅ ∇(u)) ⋅ v - u ⋅ (n_Γ ⋅ ∇(v)) + (γ / h) * u ⋅ v )
 a_ΓINS(u, v) = ν * a_ΓSP(u, v)
@@ -141,8 +142,8 @@ i_ΓgSP(u, v) = (β2 * h) * jump(n_Γg ⋅ ∇(u)) ⋅ jump(n_Γg ⋅ ∇(v))
 i_ΓgINS(u, v) = ν * i_ΓgSP(u, v)
 j_Γg(p, q) = (β3 * h^3) * jump(n_Γg ⋅ ∇(p)) * jump(n_Γg ⋅ ∇(q))
 
-ϕ_ΩINS(q, t) = (β1 * h^2) * ∇(q) ⋅ f(t) # TO BE DELETED ONCE USING THE REAL RHS FOR INS (WHICH IS ZERO)
-ϕ_ΩSP(q, t) = α * (β1 * h^2) * ∇(q) ⋅ u_MRI_Ω(t)
+ϕ_ΩINS(q, t) = (β1 ) * ∇(q) ⋅ f(t) # TO BE DELETED ONCE USING THE REAL RHS FOR INS (WHICH IS ZERO)
+ϕ_ΩSP(q, t) = α * (β1 ) * ∇(q) ⋅ u_MRI_Ω(t)
 
 #u_MRI(t) = interpolate_everywhere(V,u(t))
 
