@@ -1,37 +1,63 @@
 1.0e10
-Solving Stokes Projector (n = 24) (dt = 2.3e-5)
+Solving Stokes Projector (n = 24) (dt = 2.3e-6)
 Solving Navier Stokes
-_t_n = 2.3e-5
-_t_n = 4.6e-5
-_t_n = 6.9e-5
-_t_n = 9.2e-5
-Solving Stokes Projector (n = 32) (dt = 2.3e-5)
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+Solving Stokes Projector (n = 32) (dt = 2.3e-6)
 Solving Navier Stokes
-_t_n = 2.3e-5
-_t_n = 4.6e-5
-_t_n = 6.9e-5
-_t_n = 9.2e-5
-Solving Stokes Projector (n = 48) (dt = 2.3e-5)
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+Solving Stokes Projector (n = 48) (dt = 2.3e-6)
 Solving Navier Stokes
-_t_n = 2.3e-5
-_t_n = 4.6e-5
-_t_n = 6.9e-5
-_t_n = 9.2e-5
-Solving Stokes Projector (n = 80) (dt = 2.3e-5)
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+Solving Stokes Projector (n = 80) (dt = 2.3e-6)
 Solving Navier Stokes
-_t_n = 2.3e-5
-_t_n = 4.6e-5
-_t_n = 6.9e-5
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+0.5
+Solving Stokes Projector (n = 24) (dt = 2.3e-6)
+Solving Navier Stokes
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+Solving Stokes Projector (n = 32) (dt = 2.3e-6)
+Solving Navier Stokes
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+Solving Stokes Projector (n = 48) (dt = 2.3e-6)
+Solving Navier Stokes
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
+Solving Stokes Projector (n = 80) (dt = 2.3e-6)
+Solving Navier Stokes
+_t_n = 2.3e-6
+_t_n = 4.6e-6
+_t_n = 6.9e-6
+_t_n = 9.2e-6
 
 ======================================================================================
-                  Resource Usage on 2020-11-24 11:03:04:
-   Job Id:             13751064.gadi-pbs
+                  Resource Usage on 2020-11-25 07:51:26:
+   Job Id:             13794344.gadi-pbs
    Project:            bt62
-   Exit Status:        1
-   Service Units:      0.38
+   Exit Status:        0
+   Service Units:      0.41
    NCPUs Requested:    1                      NCPUs Used: 1               
-                                           CPU Time Used: 00:11:17                                   
-   Memory Requested:   4.0GB                 Memory Used: 1.94GB          
-   Walltime requested: 48:00:00            Walltime Used: 00:11:21        
+                                           CPU Time Used: 00:12:12                                   
+   Memory Requested:   4.0GB                 Memory Used: 1.74GB          
+   Walltime requested: 48:00:00            Walltime Used: 00:12:16        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

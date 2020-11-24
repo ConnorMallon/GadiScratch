@@ -1,5 +1,0 @@
-ERROR: Invalid command 'FullMethod'
-Try 'module --help' for more information.
-/local/spool/pbs/mom_priv/jobs/13746202.gadi-pbs.SC: line 6: using: command not found
-/local/spool/pbs/mom_priv/jobs/13746202.gadi-pbs.SC: line 7: syntax error near unexpected token `"."'
-/local/spool/pbs/mom_priv/jobs/13746202.gadi-pbs.SC: line 7: `Pkg.activate(".")'
