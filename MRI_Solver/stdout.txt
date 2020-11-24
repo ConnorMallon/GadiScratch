@@ -1,31 +1,14 @@
 Solving Stokes Projector
-Solving Navier Stokes
-Writing Solution
-nliter = 1
-1
-(m, m0) = (4.931649975721748e9, 51574.88125749377)
-4.931649975721748e9
-51574.88125749377
-nliter = 2
-2
-(m, m0) = (5.551876927384461e9, 51574.88125749377)
-5.551876927384461e9
-51574.88125749377
-nliter = 3
-3
-(m, m0) = (2.4016523414338903e9, 51574.88125749377)
-2.4016523414338903e9
-51574.88125749377
 
 ======================================================================================
-                  Resource Usage on 2020-11-04 15:20:36:
-   Job Id:             13196742.gadi-pbs
+                  Resource Usage on 2020-11-24 15:01:54:
+   Job Id:             13758867.gadi-pbs
    Project:            bt62
    Exit Status:        1
-   Service Units:      8.66
+   Service Units:      1.12
    NCPUs Requested:    7                      NCPUs Used: 7               
-                                           CPU Time Used: 00:37:04                                   
-   Memory Requested:   28.0GB                Memory Used: 12.2GB          
-   Walltime requested: 20:00:00            Walltime Used: 00:37:07        
+                                           CPU Time Used: 00:04:43                                   
+   Memory Requested:   28.0GB                Memory Used: 5.61GB          
+   Walltime requested: 20:00:00            Walltime Used: 00:04:47        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

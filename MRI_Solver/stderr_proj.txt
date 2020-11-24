@@ -1,3 +1,104 @@
+
+signal (15): Terminated
+in expression starting at /scratch/bt62/cm8825/MRI_Solver/Projector_only.jl:235
+== at ./promotion.jl:398 [inlined]
+!= at ./operators.jl:193 [inlined]
+_newindexer at ./broadcast.jl:559 [inlined]
+shapeindexer at ./broadcast.jl:554 [inlined]
+newindexer at ./broadcast.jl:553 [inlined]
+extrude at ./broadcast.jl:598 [inlined]
+preprocess at ./broadcast.jl:892 [inlined]
+preprocess_args at ./broadcast.jl:894 [inlined]
+preprocess at ./broadcast.jl:891 [inlined]
+copyto! at ./broadcast.jl:908 [inlined]
+copyto! at ./broadcast.jl:864 [inlined]
+materialize! at ./broadcast.jl:823 [inlined]
+broadcast! at ./broadcast.jl:797
+apply_kernel! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Kernels.jl:249
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+apply_kernel! at /home/565/cm8825/.julia/dev/Gridap/src/Fields/FieldOperations.jl:117 [inlined]
+_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:260
+_cached_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:249 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:238 [inlined]
+_getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:318
+unknown function (ip: 0x15407f1cd7d1)
+getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:296 [inlined]
+_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:259
+_cached_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:249 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:238 [inlined]
+_getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:318 [inlined]
+getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:296 [inlined]
+_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:259
+_cached_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:249 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:238 [inlined]
+_getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:317 [inlined]
+getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:296 [inlined]
+_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:259
+_cached_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:249 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:238 [inlined]
+_getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:325 [inlined]
+getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:296 [inlined]
+_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:259
+_cached_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:249 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:238 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/ArrayPairs.jl:41 [inlined]
+_getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:325 [inlined]
+getitems! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Interface.jl:296 [inlined]
+_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:259
+_cached_getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:249 [inlined]
+getindex! at /home/565/cm8825/.julia/dev/Gridap/src/Arrays/Apply.jl:238 [inlined]
+_assemble_matrix_and_vector_fill! at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/SparseMatrixAssemblers.jl:538
+unknown function (ip: 0x15407bc11825)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+fill_matrix_and_vector_coo_numeric! at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/SparseMatrixAssemblers.jl:522
+fill_matrix_and_vector_coo_numeric! at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/SparseMatrixAssemblers.jl:509 [inlined]
+assemble_matrix_and_vector at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/SparseMatrixAssemblers.jl:124
+AffineFEOperator at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/AffineFEOperators.jl:36
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+jl_apply at /buildworker/worker/package_linux64/build/src/julia.h:1700 [inlined]
+do_apply at /buildworker/worker/package_linux64/build/src/builtins.c:643
+AffineFEOperator at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/AffineFEOperators.jl:48
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+SolveStokes at /scratch/bt62/cm8825/MRI_Solver/Projector_only.jl:202
+unknown function (ip: 0x1540b20605c2)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+#8 at /scratch/bt62/cm8825/MRI_Solver/Projector_only.jl:213
+#paraview_collection#37 at /home/565/cm8825/.julia/packages/WriteVTK/3XdBx/src/WriteVTK.jl:147
+paraview_collection##kw at /home/565/cm8825/.julia/packages/WriteVTK/3XdBx/src/WriteVTK.jl:144 [inlined]
+#writePVD#7 at /scratch/bt62/cm8825/MRI_Solver/Projector_only.jl:210 [inlined]
+writePVD##kw at /scratch/bt62/cm8825/MRI_Solver/Projector_only.jl:210
+unknown function (ip: 0x1540b205c33c)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2159 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+jl_apply at /buildworker/worker/package_linux64/build/src/julia.h:1700 [inlined]
+do_call at /buildworker/worker/package_linux64/build/src/interpreter.c:369
+eval_value at /buildworker/worker/package_linux64/build/src/interpreter.c:458
+eval_stmt_value at /buildworker/worker/package_linux64/build/src/interpreter.c:409 [inlined]
+eval_body at /buildworker/worker/package_linux64/build/src/interpreter.c:817
+jl_interpret_toplevel_thunk at /buildworker/worker/package_linux64/build/src/interpreter.c:911
+jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:819
+jl_eval_module_expr at /buildworker/worker/package_linux64/build/src/toplevel.c:186
+jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:645
+jl_parse_eval_all at /buildworker/worker/package_linux64/build/src/ast.c:872
+jl_load at /buildworker/worker/package_linux64/build/src/toplevel.c:877
+include at ./Base.jl:377
+exec_options at ./client.jl:288
+_start at ./client.jl:484
+jfptr__start_2075.clone_1 at /home/565/cm8825/julia-1.4.2/lib/julia/sys.so (unknown line)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+jl_apply at /buildworker/worker/package_linux64/build/ui/../src/julia.h:1700 [inlined]
+true_main at /buildworker/worker/package_linux64/build/ui/repl.c:96
+main at /buildworker/worker/package_linux64/build/ui/repl.c:217
+__libc_start_main at /lib64/libc.so.6 (unknown line)
+_start at /home/565/cm8825/julia-1.4.2/bin/julia (unknown line)
+unknown function (ip: (nil))
+Allocations: 4025565035 (Pool: 3997122992; Big: 28442043); GC: 8101
  Activating environment at `/scratch/bt62/cm8825/MRI_Solver/Project.toml`
 ┌ Warning: `CSV.read(input; kw...)` is deprecated in favor of `using DataFrames; CSV.read(input, DataFrame; kw...)
 │   caller = read at CSV.jl:40 [inlined]

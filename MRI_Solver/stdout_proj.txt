@@ -2,16 +2,22 @@ Writing Solution
 i = 0
 i = 1
 i = 2
+i = 3
+i = 4
+i = 5
+i = 6
+i = 7
+i = 8
 
 ======================================================================================
-                  Resource Usage on 2020-11-04 08:41:39:
-   Job Id:             13185355.gadi-pbs
+                  Resource Usage on 2020-11-24 10:03:01:
+   Job Id:             13749322.gadi-pbs
    Project:            bt62
-   Exit Status:        0
-   Service Units:      2.36
+   Exit Status:        271 (Linux Signal 15 SIGTERM Termination)
+   Service Units:      5.38
    NCPUs Requested:    4                      NCPUs Used: 4               
-                                           CPU Time Used: 00:17:40                                   
-   Memory Requested:   16.0GB                Memory Used: 12.03GB         
-   Walltime requested: 20:00:00            Walltime Used: 00:17:44        
+                                           CPU Time Used: 00:39:58                                   
+   Memory Requested:   16.0GB                Memory Used: 12.64GB         
+   Walltime requested: 20:00:00            Walltime Used: 00:40:20        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

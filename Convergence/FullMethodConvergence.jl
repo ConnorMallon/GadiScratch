@@ -1,6 +1,7 @@
 
 module FullMethod
 
+
 using Pkg
 Pkg.activate(".")
 
@@ -25,25 +26,45 @@ using Plots
 using CSV
 using Gridap.Algebra: NewtonRaphsonSolver
 
+
+
+
+
+#Laws
+@law conv(u, ∇u) = (∇u') ⋅ u
+@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) + conv(du, ∇u)
+
+# Physical constants
+u_max = 150 #150# 150#  150 #cm/s
+L = 1 #cm
+ρ =  1.06e-3 #kg/cm^3 
+μ =  3.50e-5 #kg/cm.s
+ν = μ/ρ 
+Δt =  0.046 / 5000 # 0.046  #s \\
+
+
 # #=
 #Space Convergence Parameters
 θ = 1
-ns = [16,20,28,42,56]
-dts = 0.05#[0.2,0.1,0.05,0.025,0.0125]
-tF= 1#0.01
-SNRs = [1e10,100,50,20,5]
-n_tests = 50 #20
+ns = [24,32,48,80]
+dts = 4 #[0.2,0.1,0.05]
+tF = Δt
+SNRs = [1e10,0.5] # [1e10,20,5]
+n_tests = 1# 15 #5 #20
 # =#
 
  #=
 #Time Convergence Parameters
 θ = 1
-ns = 24
-dts = [0.2,0.1,0.05,0.025,0.0125]
-tF= 1
-SNRs = [1e10,100,50,20,5]
-n_tests = 30 #30
+ns = 32
+dts = [8,16,32]
+tF = Δt
+SNRs = 1e10 # [1e10,100,50,20,5]
+n_tests = 1 #50 #30
  =#
+
+
+
 
 #Manufactured solution
 k=2*pi
@@ -54,8 +75,8 @@ if length(dts) > 1
  dimδs = dts
  dimname = "Time"
 
- u(x,t) = VectorValue(x[1]+x[2],-x[1]-x[2])*cos(k*t)
- p(x,t) = (x[1]-x[2])*cos(k*t)
+ u(x,t) = u_max * VectorValue(x[2],x[1]) * sin( k* (t/Δt) )
+ p(x,t) = (x[1]-x[2])*sin(k* (t/Δt) )
 
 elseif length(ns) > 1
  @assert ( length(dts) == 1 )
@@ -63,11 +84,13 @@ elseif length(ns) > 1
  dimδs = ns
  dimname = "Space"
 
- u(x,t) = VectorValue(-cos(k*x[1])*sin(k*x[2]),sin(k*x[1])*cos(k*x[2]))*t
- p(x,t) = k*(sin(k*x[1])-sin(k*x[2]))*t
+ u(x,t) = u_max * VectorValue(-cos(k*x[1])*sin(k*x[2]),sin(k*x[1])*cos(k*x[2])) * ( t/ Δt )
+ p(x,t) = k*(sin(k*x[1])-sin(k*x[2]))* (t/Δt)
 else
  throw(InputError("choose 1 dimension to test (dt or h) and set that to a lengh > 1 vector and the other dim to a length = 1 vector"))
 end
+
+ud(t) = u(t)
 
 #= BOTH LINEAR
 u(x,t) = VectorValue(x[1],x[2])*t
@@ -75,14 +98,7 @@ u(x,t) = VectorValue(x[1],x[2])*t
 p(x,t) = (x[1] + x[2])
 =#
 
-#Laws
-@law conv(u, ∇u) = (∇u') ⋅ u
-@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
 
-#Physical constants
-ρ = 1.06e-3 #kg/cm^3 
-μ = 3.50e-5  #kg/cm.s
-ν = μ/ρ 
 
 u(t::Real) = x -> u(x,t)
 #∂tu(x,t) = ∂tu(t)(x)
@@ -95,7 +111,7 @@ p(t::Real) = x -> p(x,t)
 #∂t(::typeof(p)) = ∂tp
 
 α = 1
-f(t) = x -> ∂t(u)(t)(x) + conv(u(t)(x),∇(u(t))(x)) - ν*Δ(u(t))(x) + ∇(p(t))(x) #FOR INS TEST
+f(t) = x -> ρ * ∂t(u)(t)(x) + ρ * conv(u(t)(x),∇(u(t))(x)) - μ * Δ(u(t))(x) + ∇(p(t))(x)
 #f(t) = x -> α*u(t)(x)-Δ(u(t))(x)+∇(p(t))(x) #FOR STOKES PROJECTOR TEST
 g(t) = x -> (∇⋅u(t))(x)
 
@@ -103,48 +119,68 @@ order = 1
 
 function run_test(n,dt,tF,SNR,θ)
 
+h=L/n
+
+#NITSCHE
+α_γ = 35
+γ_SP = α_γ * ( 1 / h )
+@law γ(u) =  α_γ * ( ν / h  +  ρ * maximum(u) / 6 ) # Nitsche Penalty parameter ( γ / h ) 
+
+#STABILISATION
+α_τ = 1 #Tunable coefficiant (0,1)
+τ_SUPG_SP = α_τ * ( (2/ Δt )^2  + 9 * ( 4*1 / h^2 ) )^(-0.5)
+@law τ_SUPG(u) = α_τ * ( (2/ Δt )^2 + ( 2 * maximum( abs.(u.data) ) / h )^2 + 9 * ( 4*ν / h^2 ) )^(-0.5) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
+@law τ_PSPG(u) = τ_SUPG(u) # PSPG stabilisation - inf-sup stab  ( ρ^-1 * τ_PSPG(u) )
+
+#GHOST PENALTY
+# Ghost Penalty parameters  
+α_B = 1 
+α_u = 1 
+α_p = 1 
+
+#NS Paper ( DOI 10.1007/s00211-007-0070-5)
+γ_B3(u)      = α_B * h^2  *  ( n_Γg ⋅ mean(u)  ) * ( n_Γg ⋅ mean(u)  )  #conv
+γ_u3      = α_u * h^2  #visc diffusion 
+γ_p3      = α_p * h^2  #pressure
+
+
+
 # Select geometry
-R = 0.7
-geo1 = disk(R)
-box = get_metadata(geo1)
+R = 0.4
+geom = disk(R,x0=Point(0.75,0.75))
+#geom = disk(R,x0=Point(0.5,0.5))
+partition = (n,n)
+D=length(partition)
+
+# Setup background model
+domain = (0,L,0,L)
+bgmodel = simplexify(CartesianDiscreteModel(domain,partition))
 
 # Cut the background model
-partition = (n,n)
-D = length(partition)
-bgmodel = simplexify(CartesianDiscreteModel(box.pmin,box.pmax,partition))
-cutgeo = cut(bgmodel,geo1)
-
-# Generate the "active" model
-model = DiscreteModel(cutgeo)
-
-tempvar=discretize(geo1,bgmodel)
-
-tree1=tempvar.tree
-level_set=tree1.data[1]
-
-point_to_coords=collect1d(get_node_coordinates(bgmodel))
-DG1=DiscreteGeometry(level_set,point_to_coords,name="")
-cutter=LevelSetCutter()
-
-DGcutgeo=cut(cutter,bgmodel,DG1)
-DGmodel=DiscreteModel(DGcutgeo)
-
-model=DGmodel
-cutgeo=DGcutgeo
+cutdisc = cut(bgmodel,geom)
+model = DiscreteModel(cutdisc)
 
 # Setup integration meshes
-trian_Ω = Triangulation(cutgeo)
-trian_Γ = EmbeddedBoundary(cutgeo)
-trian_Γg = GhostSkeleton(cutgeo)
+trian_Ω = Triangulation(cutdisc)
+trian_Γ = EmbeddedBoundary(cutdisc)
+trian_Γg = GhostSkeleton(cutdisc)
+#writevtk(trian_Γ,"trian_Γ")
+
+cutter = LevelSetCutter()
+cutgeo_facets = cut_facets(cutter,bgmodel,geom)
+trian_Γn = BoundaryTriangulation(cutgeo_facets,"boundary",geom)
+#writevtk(ntrian,"ntrian")
 
 # Setup normal vectors
 n_Γ = get_normal_vector(trian_Γ)
+n_Γn = get_normal_vector(trian_Γn)
 n_Γg = get_normal_vector(trian_Γg)
 
 # Setup cuadratures
 order = 1
 quad_Ω = CellQuadrature(trian_Ω,2*order)
 quad_Γ = CellQuadrature(trian_Γ,2*order)
+quad_Γn = CellQuadrature(trian_Γn,2*order)
 quad_Γg = CellQuadrature(trian_Γg,2*order)
 
 # Setup FESpace
@@ -162,37 +198,55 @@ P = TrialFESpace(Q)
 X = MultiFieldFESpace([U,P])
 Y = MultiFieldFESpace([V,Q])
 
-# Stabilization parameters
 
-β1 = 0.2
-β2 = 0.1
-β3 = 0.05
-γ = 10.0
-h = (box.pmax-box.pmin)[1]/partition[1]
+α = 1 #for dimension conversion in the SP- should have dim 1/L^2
 
-# Terms
-m_Ω(u, v) = u ⊙ v
+## Terms
+#Stokes Projector
+m_ΩSP(u, v) = u ⊙ v
 a_ΩSP(u, v) = ∇(u) ⊙ ∇(v)
-a_ΩINS(u, v) = ν* a_ΩSP(u, v)
-b_Ω(v, p) = -(∇ ⋅ v) * p
-c_Ω(u, v) = v ⊙ conv(u, ∇(u))
-dc_Ω(u, du, v) = v ⊙ dconv(du, ∇(du), u, ∇(u))
+b_ΩSP(v, p) = -(∇ ⋅ v) * p
 
-sm_Ω(u, q) = (β1 * h^2) * (u ⋅ ∇(q))
-sb_Ω(p, q) = (β1 * h^2) * ∇(p) ⋅ ∇(q)
-sc_Ω(u,q) = (β1*h^2) * conv(u, ∇(u))⋅∇(q)
-dsc_Ω(u,du,q) = (β1*h^2) * ∇(q)⋅dconv(du, ∇(du), u, ∇(u))
+sm_ΩSP(u, q) = ρ^(-1) * τ_SUPG_SP  * (u ⋅ ∇(q)) 
+sb_ΩSP(p, q) = ρ^(-1) *τ_SUPG_SP  * ∇(p) ⋅ ∇(q)
+ϕ_ΩSP(q, t) = α * ρ^(-1) * τ_SUPG_SP  * ∇(q) ⋅ u_MRI_Ω(t)
 
-a_ΓSP(u, v) = ( -(n_Γ ⋅ ∇(u)) ⋅ v - u ⋅ (n_Γ ⋅ ∇(v)) + (γ / h) * u ⋅ v )
-a_ΓINS(u, v) = ν * a_ΓSP(u, v)
-b_Γ(v, p) = (n_Γ ⋅ v) * p
+a_ΓSP(u, v) = ( -(n_Γ ⋅ ∇(u)) ⋅ v - u ⋅ (n_Γ ⋅ ∇(v)) + (γ_SP / h) * u ⋅ v )
+b_ΓSP(v, p) = (n_Γ ⋅ v) * p
 
-i_ΓgSP(u, v) = (β2 * h) * jump(n_Γg ⋅ ∇(u)) ⋅ jump(n_Γg ⋅ ∇(v))
-i_ΓgINS(u, v) = ν * i_ΓgSP(u, v)
-j_Γg(p, q) = (β3 * h^3) * jump(n_Γg ⋅ ∇(p)) * jump(n_Γg ⋅ ∇(q))
+i_ΓgSP(u,v) = ( γ_u3 )*jump(n_Γg⋅∇(u))⋅jump(n_Γg⋅∇(v))
+j_ΓgSP(p,q) = ( γ_p3 ) * jump(n_Γg⋅∇(p))*jump(n_Γg⋅∇(q))
 
-ϕ_ΩINS(q, t) = (β1 * h^2) * ∇(q) ⋅ f(t) # TO BE DELETED ONCE USING THE REAL RHS FOR INS (WHICH IS ZERO)
-ϕ_ΩSP(q, t) = α * (β1 * h^2) * ∇(q) ⋅ u_MRI_Ω(t)
+#Inc Navier-Stokes
+
+#Interior terms
+m_ΩINS(ut,v) = ρ * ut⊙v
+a_ΩINS(u,v) = μ * ∇(u)⊙∇(v) 
+b_ΩINS(v,p) = - (∇⋅v)*p
+c_ΩINS(u, v) = ρ *  v ⊙ conv(u, ∇(u))
+dc_ΩINS(u, du, v) = ρ * v ⊙ dconv(du, ∇(du), u, ∇(u))
+
+#Boundary terms 
+a_ΓINS(u,v) = μ* ( - (n_Γ⋅∇(u))⋅v - u⋅(n_Γ⋅∇(v)) ) + ( γ(u)/h )*u⋅v 
+b_ΓINS(v,p) = (n_Γ⋅v)*p
+
+#PSPG 
+sp_ΩINS(w,p,q)    = (ρ^(-1) * τ_PSPG(w))     *  ∇(q) ⋅ ∇(p)
+st_ΩINS(w,ut,q)   = (ρ^(-1) * τ_PSPG(w)) * ρ *  ∇(q) ⋅ ut
+sc_ΩINS(w,u,q)    = (ρ^(-1) * τ_PSPG(w)) * ρ *  ∇(q) ⋅ conv(u, ∇(u))
+dsc_ΩINS(w,u,du,q)= (ρ^(-1) * τ_PSPG(w)) * ρ *  ∇(q) ⋅ dconv(du, ∇(du), u, ∇(u))
+ϕ_ΩINS(w,q,t)     = (ρ^(-1) * τ_PSPG(w))     *  ∇(q) ⋅ f(t)
+
+#SUPG
+sp_sΩINS(w,p,v)    = τ_SUPG(w)     *  conv(w,∇(v)) ⋅ ∇(p)
+st_sΩINS(w,ut,v)   = τ_SUPG(w) * ρ *  conv(w,∇(v)) ⋅ ut
+sc_sΩINS(w,u,v)    = τ_SUPG(w) * ρ *  conv(w,∇(v)) ⋅ conv(u, ∇(u)) 
+dsc_sΩINS(w,u,du,v)= τ_SUPG(w) * ρ *  conv(w,∇(v)) ⋅ dconv(du, ∇(du), u, ∇(u)) 
+ϕ_sΩINS(w,v,t)     = τ_SUPG(w)     *  conv(w,∇(v)) ⋅ f(t)  
+
+#Ghost Penalty terms
+i_ΓgINS(w,u,v) = ( γ_B3(w) + γ_u3 )*jump(n_Γg⋅∇(u))⋅jump(n_Γg⋅∇(v))
+j_ΓgINS(w,p,q) = ( γ_p3 ) * jump(n_Γg⋅∇(p))*jump(n_Γg⋅∇(q))
 
 A = (0.35/(0.5*SNR)) # Max value for random numbers "SIGNAL LEVEL IS 0.35 (RMS OF SINXCOSX) and the 0.5 is avg of rand(0,1)"
 x0 = A*randn(Float64,num_free_dofs(V)) # Vector of DOFs for the FE space
@@ -201,41 +255,50 @@ u_MRI(t) = interpolate_everywhere(V,u(t)+noise)
 u_MRI_Ω(t) = restrict(u_MRI(t), trian_Ω)
 u_MRI_Γ(t) = restrict(u_MRI(t), trian_Γ)
 
+u_Γn(t) = u(t)
+p_Γn(t) = p(t)
+
 function SolveStokes(t)
 
-function A_Ω(X, Y)
-  u, p = X
-  v, q = Y
-  α * m_Ω(u, v) + a_ΩSP(u, v) + b_Ω(u, q) + b_Ω(v, p) - α * sm_Ω(u, q) - sb_Ω(p, q)
-end
+  function A_Ω(X, Y)
+    u, p = X
+    v, q = Y
+    α * m_ΩSP(u, v) + a_ΩSP(u, v) + b_ΩSP(u, q) + b_ΩSP(v, p) - α * sm_ΩSP(u, q) - sb_ΩSP(p, q)
+  end
+  
+  function A_Γ(X, Y)
+    u, p = X
+    v, q = Y
+    a_ΓSP(u, v) + b_ΓSP(u, q) + b_ΓSP(v, p)
+  end
+  
+  function J_Γg(X, Y)
+    u, p = X
+    v, q = Y
+    i_ΓgSP(u, v) - j_ΓgSP(p, q)
+  end
+  
+  function L_Ω(Y)
+    v, q = Y
+    α * m_ΩSP(u_MRI_Ω(t), v)  + a_ΩSP(u_MRI_Ω(t), v) - ϕ_ΩSP(q, t) - q * g(t)
+  end
+  
+  function L_Γ(Y)
+    v, q = Y
+    u_MRI_Γ(t) ⊙ ( (γ_SP / h) * v - n_Γ ⋅ ∇(v) + q * n_Γ)  - v⋅(n_Γ⋅∇(u_MRI_Γ(t)))
+  end
 
-function A_Γ(X, Y)
-  u, p = X
-  v, q = Y
-  a_ΓSP(u, v) + b_Γ(u, q) + b_Γ(v, p)
-end
-
-function J_Γg(X, Y)
-  u, p = X
-  v, q = Y
-  i_ΓgSP(u, v) - j_Γg(p, q)
-end
-
-function L_Ω(Y)
-  v, q = Y
-  α * m_Ω(u_MRI_Ω(t), v)  + a_ΩSP(u_MRI_Ω(t), v) - ϕ_ΩSP(q, t) - q * g(t)
-end
-
-function L_Γ(Y)
-  v, q = Y
-  u_MRI_Γ(t) ⊙ ((γ / h) * v - n_Γ ⋅ ∇(v) + q * n_Γ)  - v⋅(n_Γ⋅∇(u_MRI_Γ(t)))
-end
+  function l_Γn(y)
+    v,q = y
+    ν * v⋅(n_Γn⋅∇(u_Γn(t))) - (n_Γn⋅v)*p_Γn(t)
+  end
 
 # FE problem
 t_Ω = AffineFETerm(A_Ω,L_Ω,trian_Ω,quad_Ω)
 t_Γ = AffineFETerm(A_Γ,L_Γ,trian_Γ,quad_Γ)
+t_Γn = FESource(l_Γn,trian_Γn,quad_Γn)
 t_Γg = LinearFETerm(J_Γg,trian_Γg,quad_Γg)
-op = AffineFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
+op = AffineFEOperator(X,Y,t_Ω,t_Γ,t_Γg,t_Γn)
 uh, ph = solve(op)
 
 # Postprocess
@@ -259,20 +322,27 @@ function res_Ω(t,x,xt,y)
   u,p = x
   ut,pt = xt
   v,q = y
-  m_Ω(ut,v) + a_ΩINS(u,v) + b_Ω(v,p) + b_Ω(u,q) + c_Ω(u,v) - v⋅f(t) + q*g(t) - sm_Ω(ut,q) - sb_Ω(p,q) - sc_Ω(u,q) + ϕ_ΩINS(q,t)
+  ( m_ΩINS(ut,v) + a_ΩINS(u,v) + b_ΩINS(v,p) + b_ΩINS(u,q) - v⋅f(t) + q*g(t) + c_ΩINS(u,v)  # + ρ * 0.5 * (∇⋅u) * u ⊙ v  
+  - sp_ΩINS(u,p,q)  -  st_ΩINS(u,ut,q)   + ϕ_ΩINS(u,q,t)     - sc_ΩINS(u,u,q) 
+  - sp_sΩINS(u,p,v) - st_sΩINS(u,ut,v)  + ϕ_sΩINS(u,v,t)    - sc_sΩINS(u,u,v) )
 end
 
 function jac_Ω(t,x,xt,dx,y)
   u, p = x
   du,dp = dx
   v,q = y
-  dc_Ω(u, du, v) + a_ΩINS(du,v) + b_Ω(v,dp) + b_Ω(du,q) - sb_Ω(dp,q) - dsc_Ω(u,du,q)
+  ( a_ΩINS(du,v) + b_ΩINS(v,dp) + b_ΩINS(du,q)  + dc_ΩINS(u, du, v) # + ρ * 0.5 * (∇⋅u) * du ⊙ v 
+  - sp_ΩINS(u,dp,q)  - dsc_ΩINS(u,u,du,q) 
+  - sp_sΩINS(u,dp,v) - dsc_sΩINS(u,u,du,v) )
 end
 
 function jac_tΩ(t,x,xt,dxt,y)
+  u,p = x 
   dut,dpt = dxt
   v,q = y
-  m_Ω(dut,v) - sm_Ω(dut,q)
+  ( m_ΩINS(dut,v) 
+  - st_ΩINS(u,dut,q) 
+  - st_sΩINS(u,dut,v) )
 end
 
 #Boundary term collection
@@ -280,19 +350,40 @@ function res_Γ(t,x,xt,y)
   u,p = x
   ut,pt = xt
   v,q = y
-  a_ΓINS(u,v)+b_Γ(u,q)+b_Γ(v,p) - restrict(u_projΓ(t),trian_Γ) ⊙( ν*(γ/h)*v - ν*n_Γ⋅∇(v) + q*n_Γ )
+  a_ΓINS(u,v)+b_ΓINS(u,q)+b_ΓINS(v,p) - restrict(u_projΓ(t),trian_Γ) ⊙ (  ( γ(u)/h )*v - μ * n_Γ⋅∇(v) + q*n_Γ )
 end
 
 function jac_Γ(t,x,xt,dx,y)
   du,dp = dx
   v,q = y
-  a_ΓINS(du,v)+b_Γ(du,q)+b_Γ(v,dp)
+  a_ΓINS(du,v)+b_ΓINS(du,q)+b_ΓINS(v,dp)
 end
 
 function jac_tΓ(t,x,xt,dxt,y)
   dut,dpt = dxt
   v,q = y
-  0*m_Ω(dut,v)
+  0*m_ΩINS(dut,v)
+end
+
+#Neumann term collection
+function res_Γn(t,x,xt,y)
+  u,p = x
+  ut,pt = xt
+  v,q = y
+  μ * - v⋅(n_Γn⋅ ∇( u_Γn(t) ) ) + (n_Γn⋅v)* p_Γn(t)
+end
+
+function jac_Γn(t,x,xt,dx,y)
+  u, p = x
+  du,dp = dx
+  v,q = y
+  0*inner(du,v)
+end
+  
+function jac_tΓn(t,x,xt,dxt,y)
+  dut,dpt = dxt
+  v,q = y
+  0*inner(dut,v)
 end
 
 #Skeleton term collection
@@ -300,39 +391,43 @@ function res_Γg(t,x,xt,y)
   u,p = x
   ut,pt = xt
   v,q = y
-  i_ΓgINS(u,v) - j_Γg(p,q)
+  i_ΓgINS(u,u,v) - j_ΓgINS(u,p,q)
 end
 
 function jac_Γg(t,x,xt,dx,y)
+  u, p = x
   du,dp = dx
   v,q = y
-  i_ΓgINS(du,v) - j_Γg(dp,q)
+  i_ΓgINS(u,du,v) - j_ΓgINS(u,dp,q)
 end
 
 function jac_tΓg(t,x,xt,dxt,y)
+  u, p = x
   dut,dpt = dxt
   v,q = y
-  0*i_ΓgINS(dut,v)
+  0*i_ΓgINS(u,dut,v)
 end
 
 xh0 = interpolate_everywhere([uh_0,ph_0],X(0.0))
+#xh0 = interpolate_everywhere([u(0),p(0)],X(0.0))
 
 t_Ω = FETerm(res_Ω,jac_Ω,jac_tΩ,trian_Ω,quad_Ω)
 t_Γ = FETerm(res_Γ,jac_Γ,jac_tΓ,trian_Γ,quad_Γ)
+t_Γn = FETerm(res_Γn,jac_Γn,jac_tΓn,trian_Γn,quad_Γn)
 t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
 
-op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γg)
+op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γn,t_Γg)
 
-
-ls=LUSolver()
- #=
+#=
 nls = NLSolver(
     show_trace = false,
     method = :newton,
     linesearch = BackTracking(),
 )
- =#
-nls = NewtonRaphsonSolver(ls,1e99,1)
+=#
+
+ls=LUSolver()
+nls = NewtonRaphsonSolver(ls,1e-4,40) 
 
 odes = ThetaMethod(nls, dt, θ)
 solver = TransientFESolver(odes)
@@ -371,9 +466,10 @@ epl2=last(epl2)
 end #function INS
 
 #running solvers
+n_t= dt
 t0 = 0.0
-tF = tF
-dt = dt
+tF = Δt
+dt = Δt/n_t
 
 println("Solving Stokes Projector (n = $(n)) (dt = $(dt))")
 u_projΓ_vector = []
@@ -390,7 +486,7 @@ uh = u_projΓ_vector
 u_projΓ(t) = u_projΓ_vector[Int(round((t/dt)+1,digits=7))]
 
 println("Solving Navier Stokes")
-(eul2, epl2) = SolveNavierStokes(u_projΓ,uh_0,ph_0)
+(eul2, epl2) = SolveNavierStokes( u_projΓ,uh_0,ph_0 )
 
 (eul2, epl2, h)
 
@@ -446,7 +542,7 @@ for SNR in SNRs
       shape=:auto,
       xlabel=x_plot_name,
       ylabel="L2 error norm",
-      title = "Method_Convergence_1_$(x_plot)")
+      title = "Method_Convergence_$(x_plot)")
 
   #Tabulating Data
   df_i = DataFrame(eu = eul2s, ep = epl2s)
@@ -462,7 +558,7 @@ if dimδ == "n"
 end
 
 #Saving data
-folderName = "Results_q"
+folderName = "Results"
 PlotFileName = "$(dimname)ConvergencePlot"
 DataFileName = "$(dimname)ConvergenceData"
 
