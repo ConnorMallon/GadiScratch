@@ -1,0 +1,51 @@
+
+signal (15): Terminated
+in expression starting at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:391
+setindex! at ./array.jl:826 [inlined]
+sparse! at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.4/SparseArrays/src/sparsematrix.jl:757
+unknown function (ip: 0x147e9eadcc87)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+sparse at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.4/SparseArrays/src/sparsematrix.jl:661
+unknown function (ip: 0x147e9eadb7cc)
+sparse at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.4/SparseArrays/src/sparsematrix.jl:850 [inlined]
+sparse_from_coo at /home/565/cm8825/.julia/dev/Gridap/src/Algebra/SparseMatrixCSC.jl:3
+unknown function (ip: 0x147e9eadb17c)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+assemble_matrix_and_vector at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/SparseMatrixAssemblers.jl:129
+AffineFEOperator at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/AffineFEOperators.jl:36
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+jl_apply at /buildworker/worker/package_linux64/build/src/julia.h:1700 [inlined]
+do_apply at /buildworker/worker/package_linux64/build/src/builtins.c:643
+AffineFEOperator at /home/565/cm8825/.julia/dev/Gridap/src/FESpaces/AffineFEOperators.jl:48
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+SolveStokes at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:249
+unknown function (ip: 0x147eb7f5b1f2)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+top-level scope at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:392
+jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:813
+jl_eval_module_expr at /buildworker/worker/package_linux64/build/src/toplevel.c:186
+jl_toplevel_eval_flex at /buildworker/worker/package_linux64/build/src/toplevel.c:645
+jl_parse_eval_all at /buildworker/worker/package_linux64/build/src/ast.c:872
+jl_load at /buildworker/worker/package_linux64/build/src/toplevel.c:877
+include at ./Base.jl:377
+exec_options at ./client.jl:288
+_start at ./client.jl:484
+jfptr__start_2075.clone_1 at /home/565/cm8825/julia-1.4.2/lib/julia/sys.so (unknown line)
+_jl_invoke at /buildworker/worker/package_linux64/build/src/gf.c:2145 [inlined]
+jl_apply_generic at /buildworker/worker/package_linux64/build/src/gf.c:2323
+jl_apply at /buildworker/worker/package_linux64/build/ui/../src/julia.h:1700 [inlined]
+true_main at /buildworker/worker/package_linux64/build/ui/repl.c:96
+main at /buildworker/worker/package_linux64/build/ui/repl.c:217
+__libc_start_main at /lib64/libc.so.6 (unknown line)
+_start at /home/565/cm8825/julia-1.4.2/bin/julia (unknown line)
+unknown function (ip: (nil))
+Allocations: 1792158035 (Pool: 1782487873; Big: 9670162); GC: 3210
+ Activating environment at `/scratch/bt62/cm8825/MRI_Solver/Project.toml`
+┌ Warning: `CSV.read(input; kw...)` is deprecated in favor of `using DataFrames; CSV.read(input, DataFrame; kw...)
+│   caller = read at CSV.jl:40 [inlined]
+└ @ Core ~/.julia/packages/CSV/MKemC/src/CSV.jl:40

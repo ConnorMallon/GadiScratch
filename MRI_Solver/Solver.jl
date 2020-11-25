@@ -125,7 +125,7 @@ Y = MultiFieldFESpace([V,Q])
 #STABILISATION
 α_τ = 1 #Tunable coefficiant (0,1)
 τ_SUPG_SP = α_τ * ( (2/ Δt )^2  + 9 * ( 4*1 / h^2 ) )^(-0.5)
-@law τ_SUPG(u) = α_τ * ( (2/ Δt )^2 + ( 2 * maximum( abs.(u.data) ) / h )^2 + 9 * ( 4*ν / h^2 ) )^(-0.5) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
+@law τ_SUPG(u) = α_τ * ( (2/ Δt )^2 + ( 2 * maximum( abs.(u.data) ) / h )^2 + 9 * ( 4*ν / h^2 )^2 )^(-0.5) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
 @law τ_PSPG(u) = τ_SUPG(u) # PSPG stabilisation - inf-sup stab  ( ρ^-1 * τ_PSPG(u) )
 
 #GHOST PENALTY

@@ -1,0 +1,14 @@
+Solving Stokes Projector
+
+======================================================================================
+                  Resource Usage on 2020-11-25 08:41:42:
+   Job Id:             13796234.gadi-pbs
+   Project:            bt62
+   Exit Status:        271 (Linux Signal 15 SIGTERM Termination)
+   Service Units:      3.90
+   NCPUs Requested:    7                      NCPUs Used: 7               
+                                           CPU Time Used: 00:16:38                                   
+   Memory Requested:   28.0GB                Memory Used: 11.92GB         
+   Walltime requested: 20:00:00            Walltime Used: 00:16:44        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================
