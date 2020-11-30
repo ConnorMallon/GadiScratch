@@ -1,14 +1,53 @@
 Solving Stokes Projector
+Solving Navier Stokes
+Writing Solution
+nliter = 1
+1
+(m, m0) = (56588.72323713802, 5.095062165640199e6)
+56588.72323713802
+5.095062165640199e6
+nliter = 2
+2
+(m, m0) = (61548.7825416474, 5.095062165640199e6)
+61548.7825416474
+5.095062165640199e6
+nliter = 3
+3
+(m, m0) = (4187.099857396557, 5.095062165640199e6)
+4187.099857396557
+5.095062165640199e6
+i = 1
+nliter = 1
+1
+(m, m0) = (4348.372141321011, 10483.134708576104)
+4348.372141321011
+10483.134708576104
+nliter = 2
+2
+(m, m0) = (637.273286104697, 10483.134708576104)
+637.273286104697
+10483.134708576104
+nliter = 3
+3
+(m, m0) = (116.60305423936305, 10483.134708576104)
+116.60305423936305
+10483.134708576104
+nliter = 4
+4
+(m, m0) = (17.388543331394814, 10483.134708576104)
+17.388543331394814
+10483.134708576104
+i = 2
 
 ======================================================================================
-                  Resource Usage on 2020-11-25 08:41:42:
-   Job Id:             13796234.gadi-pbs
+                  Resource Usage on 2020-11-30 18:18:20:
+   Job Id:             13926532.gadi-pbs
    Project:            bt62
-   Exit Status:        271 (Linux Signal 15 SIGTERM Termination)
-   Service Units:      3.90
+   Exit Status:        0
+   Service Units:      19.61
    NCPUs Requested:    7                      NCPUs Used: 7               
-                                           CPU Time Used: 00:16:38                                   
-   Memory Requested:   28.0GB                Memory Used: 11.92GB         
-   Walltime requested: 20:00:00            Walltime Used: 00:16:44        
+                                           CPU Time Used: 01:23:49                                   
+   Memory Requested:   28.0GB                Memory Used: 12.46GB         
+   Walltime requested: 20:00:00            Walltime Used: 01:24:03        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

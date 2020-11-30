@@ -39,7 +39,7 @@ L = 1 #cm
 μ =  3.50e-5 #kg/cm.s
 ν = μ/ρ 
 
-n_d = 1000 #1000 # number of times to split original timestep
+n_d = 100 #1000 # number of times to split original timestep
 Δt =  0.046e-3 #n_d  #s \\
 n_t = 2 #19
 
@@ -123,19 +123,19 @@ Y = MultiFieldFESpace([V,Q])
 @law γ(u) =  α_γ * ( ν / h  +  ρ * maximum(u) / 6 ) # Nitsche Penalty parameter ( γ / h ) 
 
 #STABILISATION
-α_τ = 1 #Tunable coefficiant (0,1)
+α_τ = 0.1 #Tunable coefficiant (0,1)
 τ_SUPG_SP = α_τ * ( (2/ Δt )^2  + 9 * ( 4*1 / h^2 ) )^(-0.5)
-@law τ_SUPG(u) = α_τ * ( (2/ Δt )^2 + ( 2 * maximum( abs.(u.data) ) / h )^2 + 9 * ( 4*ν / h^2 )^2 )^(-0.5) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
+@law τ_SUPG(u) = α_τ * ( (2/ Δt )^2 + ( 2 * norm( u.data,2 ) / h )^2 + 9 * ( 4*ν / h^2 )^2 )^(-0.5) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
 @law τ_PSPG(u) = τ_SUPG(u) # PSPG stabilisation - inf-sup stab  ( ρ^-1 * τ_PSPG(u) )
 
 #GHOST PENALTY
 # Ghost Penalty parameters  
-α_B = 1 
-α_u = 1 
-α_p = 1 
+α_B = 0.1 
+α_u = 0.1 
+α_p = 0.1 
 
 #NS Paper ( DOI 10.1007/s00211-007-0070-5)
-γ_B3(u)      = α_B * h^2  *  ( n_Γg ⋅ mean(u)  ) * ( n_Γg ⋅ mean(u)  )  #conv
+γ_B3(u)   = α_B * h^2  *  ( n_Γg ⋅ mean(u)  ) * ( n_Γg ⋅ mean(u)  )  #conv
 γ_u3      = α_u * h^2  #visc diffusion 
 γ_p3      = α_p * h^2  #pressure
 
@@ -356,7 +356,7 @@ op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γn,t_Γg)
 
 ls=LUSolver() 
 
-nls = NewtonRaphsonSolver(ls,1e-5,40)
+nls = NewtonRaphsonSolver(ls,1e-2,40)
 #nls = NewtonRaphsonSolver(ls,1e99,1) #semi-implicit
 
 odes = ThetaMethod(nls, dt, θ)
