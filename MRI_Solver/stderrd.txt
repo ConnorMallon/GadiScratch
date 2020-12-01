@@ -2,3 +2,6 @@
 ┌ Warning: `CSV.read(input; kw...)` is deprecated in favor of `using DataFrames; CSV.read(input, DataFrame; kw...)
 │   caller = read at CSV.jl:40 [inlined]
 └ @ Core ~/.julia/packages/CSV/MKemC/src/CSV.jl:40
+┌ Warning: `CSV.read(input; kw...)` is deprecated in favor of `using DataFrames; CSV.read(input, DataFrame; kw...)
+│   caller = read at CSV.jl:40 [inlined]
+└ @ Core ~/.julia/packages/CSV/MKemC/src/CSV.jl:40
