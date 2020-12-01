@@ -39,9 +39,9 @@ L = 1 #cm
 μ =  3.50e-5 #kg/cm.s
 ν = μ/ρ 
 
-n_d = 100 #1000 # number of times to split original timestep
+#n_d = 100 #1000 # number of times to split original timestep
 Δt =  0.046e-3 #n_d  #s \\
-n_t = 2 #19
+n_t = 23 #23 #19
 
 t0 = 0.0
 dt = Δt
@@ -196,7 +196,14 @@ V2 = TestFESpace(
 
 #importing velocity data
 #u_MRI_import(t) = CSV.read("Data/u_MRI_$(t)")
-u_MRI_import(t) = CSV.read("Data/u_MRI_$(1)")  # using first timestep data for all t 
+
+function u_MRI_import(t)
+  if t < 6 
+    CSV.read("Data/u_MRI_$(1)")  # using first timestep data for all t 
+  else 
+    CSV.read("Data/u_MRI_$(t-4)")    
+  end
+end
 
 u_MRI_values(t) = convert(Array,u_MRI_import(t).u_MRI)
 u_MRI(t) = FEFunction(V2,u_MRI_values(t))
@@ -397,7 +404,7 @@ uh = u_projΓ_vector
 u_projΓ(t) = u_projΓ_vector[Int(round((t/dt)+1,digits=7))]
 
 ### Initialize Paraview files
-folderName = "ins-results_TESTING"
+folderName = "ins-results"
 fileName = "fields"
 if !isdir(folderName)
     mkdir(folderName)
