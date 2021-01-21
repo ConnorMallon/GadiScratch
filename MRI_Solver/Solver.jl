@@ -40,8 +40,8 @@ L = 1 #cm
 ν = μ/ρ 
 
 #n_d = 100 #1000 # number of times to split original timestep
-Δt =  0.046e-3 #n_d  #s \\
-n_t = 23 #23 #19
+Δt =  0.046 / 10 #n_d  #s \\
+n_t = 5 # 20 #23 #19
 
 t0 = 0.0
 dt = Δt
@@ -54,7 +54,7 @@ Level_Set = JSON.parsefile("Data/Distance_map.json")
 
 #Storing data into variables
 dimensions=Level_Set["dimensions"].-1 #-1 for conversion from nodes to number of cells
-spacing=Level_Set["spacing"] 
+spacing=Level_Set["spacing"] #see definition of h for conversion to mm 
 Level_Set = Level_Set["scalars"]
 Level_Set = convert(Vector{Float64},Level_Set)
 
@@ -69,6 +69,7 @@ partition=(dimensions[1],dimensions[2],dimensions[3])
 bgmodel  = simplexify(CartesianDiscreteModel(domain,partition))
 D=length(dimensions)
 h = maximum(spacing) 
+h = h/10 # converting to mm 
 
 # Setup model from level set
 point_to_coords = collect1d(get_node_coordinates(bgmodel))
@@ -197,13 +198,7 @@ V2 = TestFESpace(
 #importing velocity data
 #u_MRI_import(t) = CSV.read("Data/u_MRI_$(t)")
 
-function u_MRI_import(t)
-  if t < 6 
-    CSV.read("Data/u_MRI_$(1)")  # using first timestep data for all t 
-  else 
-    CSV.read("Data/u_MRI_$(t-4)")    
-  end
-end
+u_MRI_import(t) = CSV.read("Data/u_MRI_$(t)") 
 
 u_MRI_values(t) = convert(Array,u_MRI_import(t).u_MRI)
 u_MRI(t) = FEFunction(V2,u_MRI_values(t))
@@ -404,7 +399,7 @@ uh = u_projΓ_vector
 u_projΓ(t) = u_projΓ_vector[Int(round((t/dt)+1,digits=7))]
 
 ### Initialize Paraview files
-folderName = "ins-results"
+folderName = "ins-results_TESTING"
 fileName = "fields"
 if !isdir(folderName)
     mkdir(folderName)

@@ -12,5 +12,32 @@
     <DataSet timestep="0.00023" part="0" file="fields_5.vtu"/>
     <DataSet timestep="0.000276" part="0" file="fields_6.vtu"/>
     <DataSet timestep="0.00032199999999999997" part="0" file="fields_7.vtu"/>
+    <DataSet timestep="4.6e-5" part="0" file="fields_1.vtu"/>
+    <DataSet timestep="9.2e-5" part="0" file="fields_2.vtu"/>
+    <DataSet timestep="0.000138" part="0" file="fields_3.vtu"/>
+    <DataSet timestep="0.000184" part="0" file="fields_4.vtu"/>
+    <DataSet timestep="0.00023" part="0" file="fields_5.vtu"/>
+    <DataSet timestep="0.000276" part="0" file="fields_6.vtu"/>
+    <DataSet timestep="0.00032199999999999997" part="0" file="fields_7.vtu"/>
+    <DataSet timestep="0.00036799999999999995" part="0" file="fields_8.vtu"/>
+    <DataSet timestep="0.0004139999999999999" part="0" file="fields_9.vtu"/>
+    <DataSet timestep="0.0004599999999999999" part="0" file="fields_10.vtu"/>
+    <DataSet timestep="0.0005059999999999999" part="0" file="fields_11.vtu"/>
+    <DataSet timestep="0.000552" part="0" file="fields_12.vtu"/>
+    <DataSet timestep="0.000598" part="0" file="fields_13.vtu"/>
+    <DataSet timestep="0.000644" part="0" file="fields_14.vtu"/>
+    <DataSet timestep="0.0006900000000000001" part="0" file="fields_15.vtu"/>
+    <DataSet timestep="0.0007360000000000001" part="0" file="fields_16.vtu"/>
+    <DataSet timestep="0.0007820000000000001" part="0" file="fields_17.vtu"/>
+    <DataSet timestep="0.0008280000000000002" part="0" file="fields_18.vtu"/>
+    <DataSet timestep="0.0008740000000000002" part="0" file="fields_19.vtu"/>
+    <DataSet timestep="0.0009200000000000002" part="0" file="fields_20.vtu"/>
+    <DataSet timestep="0.00046" part="0" file="fields_1.vtu"/>
+    <DataSet timestep="0.00092" part="0" file="fields_2.vtu"/>
+    <DataSet timestep="0.0046" part="0" file="fields_1.vtu"/>
+    <DataSet timestep="0.0092" part="0" file="fields_2.vtu"/>
+    <DataSet timestep="0.0138" part="0" file="fields_3.vtu"/>
+    <DataSet timestep="0.0184" part="0" file="fields_4.vtu"/>
+    <DataSet timestep="0.023" part="0" file="fields_5.vtu"/>
   </Collection>
 </VTKFile>
