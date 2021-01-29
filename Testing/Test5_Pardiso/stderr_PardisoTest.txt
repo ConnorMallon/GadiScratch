@@ -1,5 +1,14 @@
- Activating environment at `/scratch/bt62/cm8825/Testing/Test5_Pardiso/Project.toml`
 
-real	1m42.568s
-user	1m59.695s
-sys	0m4.906s
+------------------------------------------------------------------------
+Job 16186372 has exceeded memory allocation on node gadi-cpu-clx-1393.gadi.nci.org.au
+Process "bash", pid 3003906, rss 3325952, vmem 21639168
+Process "16186372.gadi-p", pid 3004033, rss 2998272, vmem 10145792
+Process "julia", pid 3004038, rss 4387364864, vmem 6481285120
+------------------------------------------------------------------------
+For more information visit https://opus.nci.org.au/x/SwGRAQ
+------------------------------------------------------------------------
+/local/spool/pbs/mom_priv/jobs/16186372.gadi-pbs.SC: line 21: 3004038 Killed                  /home/565/cm8825/julia-1.4.2/bin/julia /scratch/bt62/cm8825/Testing/Test5_Pardiso/PardisoTest.jl
+
+real	1m28.057s
+user	1m24.190s
+sys	0m3.469s

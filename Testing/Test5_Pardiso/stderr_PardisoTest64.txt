@@ -1,0 +1,5 @@
+ Activating environment at `/scratch/bt62/cm8825/Project.toml`
+
+real	3m2.582s
+user	48m57.047s
+sys	2m26.939s

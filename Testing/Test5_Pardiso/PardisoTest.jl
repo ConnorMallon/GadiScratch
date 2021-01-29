@@ -1,42 +1,42 @@
-
 module FEMDriver
 
 using Pkg
-Pkg.activate(".")
+Pkg.activate("/scratch/bt62/cm8825")
 
 using Test
 using Gridap
 using GridapPardiso
+using BenchmarkTools
+using .Threads
+@show nthreads()
 
-function Pardiso()
+function driver()
+
+u(x) = x[1] - 2 * x[2]
+f(x) = -Δ(u)(x)
 
 tol = 1e-10
 
+n = 100
 domain = (0,1,0,1,0,1)
-partition = (50,50,50)
+partition = (n,n,n)
 
 # Simple 2D data for debugging. TODO: remove when fixed.
-#domain = (0,1,0,1)
-#partition = (3,3)
-
 model = CartesianDiscreteModel(domain,partition)
 
-V = TestFESpace(reffe=:Lagrangian, order=1, valuetype=Float64,
-  conformity=:H1, model=model, dirichlet_tags="boundary")
+order = 1 
+degree = 2 * order
+Ω = Triangulation(model)
+dΩ = Measure(Ω,degree)
 
-U = TrialFESpace(V)
+V = TestFESpace(model,ReferenceFE(lagrangian,Float64,order),conformity=:H1, dirichlet_tags="boundary")
+U = TrialFESpace(V,u)
 
-trian = get_triangulation(model)
-quad = CellQuadrature(trian,2)
+a(u,v) = ∫( ∇(v)⋅∇(u) )*dΩ 
+l(v) = ∫( v*f )*dΩ 
 
-t_Ω = AffineFETerm(
-  (v,u) -> inner(∇(v),∇(u)),
-  (v) -> inner(v, (x) -> x[1]*x[2] ),
-  trian, quad)
-
-# With non-symmetric storage
-
-op = AffineFEOperator(SparseMatrixCSR{1,Float64,Int},U,V,t_Ω)
+# with non-sym storage
+op = AffineFEOperator(a,l,U,V)
 
 ls = PardisoSolver(op)
 solver = LinearFESolver(ls)
@@ -50,27 +50,9 @@ b = get_vector(op)
 r = A*x - b
 @test maximum(abs.(r)) < tol
 
-# With symmetric storage
+end
 
-op = AffineFEOperator(SymSparseMatrixCSR{1,Float64,Int},U,V,t_Ω)
-
-ls = PardisoSolver(op)
-solver = LinearFESolver(ls)
-
-uh = solve(solver,op)
-
-x = get_free_values(uh)
-A = get_matrix(op)
-b = get_vector(op)
-
-r = A*x - b
-@test maximum(abs.(r)) < tol
-
-println("testcomplete")
-
-end #function 
-
-@time Pardiso()
-@time Pardiso()
+driver()
+@time driver()
 
 end #module

@@ -1,17 +1,13 @@
-testcomplete
- 47.203873 seconds (74.67 M allocations: 4.349 GiB, 2.80% gc time)
-testcomplete
-  9.542051 seconds (8.10 M allocations: 1014.853 MiB, 4.84% gc time)
 
 ======================================================================================
-                  Resource Usage on 2020-10-03 09:35:43:
-   Job Id:             11923014.gadi-pbs
+                  Resource Usage on 2021-01-28 12:21:23:
+   Job Id:             16186372.gadi-pbs
    Project:            bt62
-   Exit Status:        0
-   Service Units:      0.24
-   NCPUs Requested:    4                      NCPUs Used: 4               
-                                           CPU Time Used: 00:02:06                                   
-   Memory Requested:   16.0GB                Memory Used: 2.96GB          
-   Walltime requested: 00:20:00            Walltime Used: 00:01:46        
+   Exit Status:        137 (Linux Signal 9 SIGKILL Kill, unblockable)
+   Service Units:      0.05
+   NCPUs Requested:    1                      NCPUs Used: 1               
+                                           CPU Time Used: 00:01:28                                   
+   Memory Requested:   4.0GB                 Memory Used: 4.0GB           
+   Walltime requested: 00:05:00            Walltime Used: 00:01:29        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================

@@ -1,0 +1,18 @@
+ Activating environment at `/scratch/bt62/cm8825/Project.toml`
+ERROR: LoadError: SystemError: opening file "/home/565/cm8825/.julia/compiled/v1.4/GridapEmbedded/XHRcE_OTiRJ.ji": Permission denied
+Stacktrace:
+ [1] systemerror(::String, ::Int32; extrainfo::Nothing) at ./error.jl:168
+ [2] #systemerror#50 at ./error.jl:167 [inlined]
+ [3] systemerror at ./error.jl:167 [inlined]
+ [4] open(::String; read::Bool, write::Nothing, create::Nothing, truncate::Nothing, append::Bool) at ./iostream.jl:254
+ [5] open(::String, ::String) at ./iostream.jl:310
+ [6] open(::Base.var"#692#694", ::String, ::Vararg{String,N} where N; kwargs::Base.Iterators.Pairs{Union{},Union{},Tuple{},NamedTuple{(),Tuple{}}}) at ./io.jl:296
+ [7] open at ./io.jl:296 [inlined]
+ [8] compilecache(::Base.PkgId, ::String) at ./loading.jl:1264
+ [9] _require(::Base.PkgId) at ./loading.jl:1029
+ [10] require(::Base.PkgId) at ./loading.jl:927
+ [11] require(::Module, ::Symbol) at ./loading.jl:922
+ [12] include(::Module, ::String) at ./Base.jl:377
+ [13] exec_options(::Base.JLOptions) at ./client.jl:288
+ [14] _start() at ./client.jl:484
+in expression starting at /scratch/bt62/cm8825/MRI_Solver/Solver.jl:10

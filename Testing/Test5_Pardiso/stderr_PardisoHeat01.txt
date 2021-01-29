@@ -1,5 +1,0 @@
- Activating environment at `/scratch/bt62/cm8825/Testing/Test5_Pardiso/Project.toml`
-
-real	1m43.820s
-user	1m38.091s
-sys	0m3.567s

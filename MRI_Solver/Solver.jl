@@ -3,7 +3,7 @@
 module FullMethod
 
 using Pkg
-Pkg.activate(".")
+Pkg.activate("/scratch/bt62/cm8825")
 
 using Gridap
 import Gridap: ∇
@@ -27,10 +27,12 @@ using CSV
 using JSON
 using WriteVTK
 using Gridap.Algebra: NewtonRaphsonSolver
+using GridapPardiso
+using Gridap.CellData
 
 #Laws
-@law conv(u, ∇u) = (∇u') ⋅ u
-@law dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
+conv(u, ∇u) = (∇u') ⋅ u
+dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
 
 # Physical constants
 u_max = 150 #150# 150#  150 #cm/s
@@ -38,17 +40,16 @@ L = 1 #cm
 ρ =  1.06e-3 #kg/cm^3 
 μ =  3.50e-5 #kg/cm.s
 ν = μ/ρ 
+Δt =  0.046 / 100 # * 0.1 / ( u_max )   # 0.046  #s \\
 
-#n_d = 100 #1000 # number of times to split original timestep
-Δt =  0.046 / 10 #n_d  #s \\
-n_t = 5 # 20 #23 #19
+θ = 1
+n_t = 10 #n of time steps
 
 t0 = 0.0
 dt = Δt
-tF = dt*n_t #*n_d
+tF = dt*n_t
 
-θ = 1
-
+## Importing 
 #import Level_Set
 Level_Set = JSON.parsefile("Data/Distance_map.json")
 
@@ -85,62 +86,112 @@ geo_sliced_aorta = intersect(geo_aorta,geo_notcube_x)
 cutgeo_sliced_aorta = cut(cutter,bgmodel,geo_sliced_aorta)
 model = DiscreteModel(cutgeo_sliced_aorta)
 
+order = 1 
+
+reffeᵤ = ReferenceFE(lagrangian,VectorValue{D,Float64},order)
+
+#interpolation space
+V2 = FESpace(
+  bgmodel,
+  reffeᵤ,
+  conformity=:H1
+  )
+
+#importing velocity data
+#u_MRI_import(t) = CSV.read("Data/u_MRI_$(t)")
+
+u_MRI_import(i) = CSV.read("Data/u_MRI_$(i)") 
+
+u_MRI_values(i) = convert(Array,u_MRI_import(i).u_MRI)
+u_MRI(i) = FEFunction(V2,u_MRI_values(0))
+
+u_MRI_Ω(t) = u_MRI(t)
+u_MRI_Γ(t) = u_MRI(t)
+
+#writevtk(Ω,"u_MRI_0_Test",cellfields=["uh"=>u_MRI_Ω(0)])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Setup integration meshes
-trian_Ω = Triangulation(cutgeo_sliced_aorta)
-trian_Γ = EmbeddedBoundary(cutgeo_sliced_aorta, geo_sliced_aorta, geo_aorta) # nitsche
-trian_Γn = EmbeddedBoundary(cutgeo_sliced_aorta, geo_sliced_aorta, geo_notcube_x) #neumann
-trian_Γg = GhostSkeleton(cutgeo_sliced_aorta)
+Ω = Triangulation(cutgeo_sliced_aorta)
+Γ = EmbeddedBoundary(cutgeo_sliced_aorta, geo_sliced_aorta, geo_aorta) # nitsche
+Γn = EmbeddedBoundary(cutgeo_sliced_aorta, geo_sliced_aorta, geo_notcube_x) #neumann
+Γg = GhostSkeleton(cutgeo_sliced_aorta)
 
 # Setup normal vectors
-n_Γ = get_normal_vector(trian_Γ)
-n_Γn = get_normal_vector(trian_Γn)
-n_Γg = get_normal_vector(trian_Γg)
+n_Γ = get_normal_vector(Γ)
+n_Γn = get_normal_vector(Γn)
+n_Γg = get_normal_vector(Γg)
 
 # Setup cuadratures
 order = 1
-quad_Ω = CellQuadrature(trian_Ω,2*order)
-quad_Γ = CellQuadrature(trian_Γ,2*order)
-quad_Γn = CellQuadrature(trian_Γn,2*order)
-quad_Γg = CellQuadrature(trian_Γg,2*order)
+degree = 2*order
+dΩ = Measure(Ω,degree)
+dΓ = Measure(Γ,degree)
+dΓn = Measure(Γn,degree)
+dΓg = Measure(Γg,degree)
+reffeᵤ = ReferenceFE(lagrangian,VectorValue{D,Float64},order)
 
-# Setup FESpace
-V = TestFESpace(
-  model=model,valuetype=VectorValue{D,Float64},reffe=:PLagrangian,
-  order=order,conformity=:H1)
+#Spaces
+V0 = FESpace(
+  model,
+  reffeᵤ,
+  conformity=:H1
+  )
+
+reffeₚ = ReferenceFE(lagrangian,Float64,order)
 
 Q = TestFESpace(
-  model=model,valuetype=Float64,reffe=:PLagrangian,
-  order=order,conformity=:H1,constraint=:zeromean, zeromean_trian=trian_Ω)
+  model,
+  reffeₚ,
+  conformity=:H1,
+  constraint=:zeromean)
 
-U = TrialFESpace(V)
+U = TrialFESpace(V0)
 P = TrialFESpace(Q)
 
 X = MultiFieldFESpace([U,P])
-Y = MultiFieldFESpace([V,Q])
+Y = MultiFieldFESpace([V0,Q])
+
+## Coefficiants
+
+α = 1 #for dimension conversion in the SP- should have dim 1/L^2
 
 #NITSCHE
-α_γ = 35
+α_γ = 100
 γ_SP = α_γ * ( 1 / h )
-@law γ(u) =  α_γ * ( ν / h  +  ρ * maximum(u) / 6 ) # Nitsche Penalty parameter ( γ / h ) 
+γ(u) =  α_γ * ( μ / h + h*ρ/(12*θ*dt) ) #+  ρ * normInf( u ) / 6 ) # Nitsche Penalty parameter ( γ / h ) 
 
 #STABILISATION
-α_τ = 0.1 #Tunable coefficiant (0,1)
-τ_SUPG_SP = α_τ * ( (2/ Δt )^2  + 9 * ( 4*1 / h^2 ) )^(-0.5)
-@law τ_SUPG(u) = α_τ * ( (2/ Δt )^2 + ( 2 * norm( u.data,2 ) / h )^2 + 9 * ( 4*ν / h^2 )^2 )^(-0.5) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
-@law τ_PSPG(u) = τ_SUPG(u) # PSPG stabilisation - inf-sup stab  ( ρ^-1 * τ_PSPG(u) )
+α_τ = 1 #Tunable coefficiant (0,1)
+τ_PSPG_SP = α_τ * 0.1 * h^2
+τ_SUPG(u) = α_τ * inv( sqrt( ( 2 / Δt )^2 + ( 2 * normInf(u) / h )*( 2 * normInf(u) / h ) + 9 * ( 4*ν / h^2 )^2 )) # SUPG Stabilisation - convection stab ( τ_SUPG(u )
+τ_PSPG(u) = τ_SUPG(u) # PSPG stabilisation - inf-sup stab  ( ρ^-1 * τ_PSPG(u) )
 
 #GHOST PENALTY
 # Ghost Penalty parameters  
-α_B = 0.1 
-α_u = 0.1 
-α_p = 0.1 
+α_B = 0.01 
+α_u = 0.01 
+α_p = 0.01 
 
 #NS Paper ( DOI 10.1007/s00211-007-0070-5)
-γ_B3(u)   = α_B * h^2  *  ( n_Γg ⋅ mean(u)  ) * ( n_Γg ⋅ mean(u)  )  #conv
-γ_u3      = α_u * h^2  #visc diffusion 
-γ_p3      = α_p * h^2  #pressure
+γ_uSP = α_u * h  #visc diffusion 
+γ_pSP = α_p * h^3
 
-α = 1 #for dimension conversion in the SP- should have dim 1/L^2
+γ_BINS(u)   = α_B * ρ * abs(u.⁺ ⋅ n_Γg.⁺ ) * h^2    #conv
+γ_uINS     = α_u * μ * h  #visc diffusion 
+γ_pINS(u)   = α_p * inv( (μ/h) + (ρ*normInf(u.⁺)/6) ) * h^2  #pressure
 
 ## Terms
 #Stokes Projector
@@ -148,16 +199,15 @@ m_ΩSP(u, v) = u ⊙ v
 a_ΩSP(u, v) = ∇(u) ⊙ ∇(v)
 b_ΩSP(v, p) = -(∇ ⋅ v) * p
 
-sm_ΩSP(u, q) = ρ^(-1) * τ_SUPG_SP  * (u ⋅ ∇(q)) 
-sb_ΩSP(p, q) = ρ^(-1) *τ_SUPG_SP  * ∇(p) ⋅ ∇(q)
-ϕ_ΩSP(q, t) = α * ρ^(-1) * τ_SUPG_SP  * ∇(q) ⋅ u_MRI_Ω(t)
+sm_ΩSP(u, q) = ρ^(-1) * τ_PSPG_SP  * (u ⋅ ∇(q)) 
+sb_ΩSP(p, q) = ρ^(-1) *τ_PSPG_SP  * ∇(p) ⋅ ∇(q)
+ϕ_ΩSP(q, t) = α * ρ^(-1) * τ_PSPG_SP  * ∇(q) ⋅ u_MRI_Ω(t)
 
 a_ΓSP(u, v) = ( -(n_Γ ⋅ ∇(u)) ⋅ v - u ⋅ (n_Γ ⋅ ∇(v)) + (γ_SP / h) * u ⋅ v )
 b_ΓSP(v, p) = (n_Γ ⋅ v) * p
 
-i_ΓgSP(u,v) = ( γ_u3 )* jump(n_Γg⋅∇(u))⋅jump(n_Γg⋅∇(v))
-j_ΓgSP(p,q) = ( γ_p3 ) * jump(n_Γg⋅∇(p))*jump(n_Γg⋅∇(q))
-
+i_ΓgSP(u,v) = ( γ_uSP ) * jump(n_Γg⋅∇(u))⋅jump(n_Γg⋅∇(v))
+j_ΓgSP(p,q) = ( γ_pSP ) * jump(n_Γg⋅∇(p))*jump(n_Γg⋅∇(q))
 
 #Inc Navier-Stokes
 
@@ -185,198 +235,100 @@ st_sΩINS(w,ut,v)   = τ_SUPG(w) * ρ *  conv(w,∇(v)) ⋅ ut
 sc_sΩINS(w,u,v)    = τ_SUPG(w) * ρ *  conv(w,∇(v)) ⋅ conv(u, ∇(u)) 
 dsc_sΩINS(w,u,du,v)= τ_SUPG(w) * ρ *  conv(w,∇(v)) ⋅ dconv(du, ∇(du), u, ∇(u)) 
 ϕ_sΩINS(w,v,t)     = τ_SUPG(w)     *  conv(w,∇(v)) ⋅ f(t)  
-#u_MRI(t) = interpolate_everywhere(V,u(t))
 
 #Ghost Penalty terms
-i_ΓgINS(w,u,v) = ( γ_B3(w) + γ_u3 )*jump(n_Γg⋅∇(u))⋅jump(n_Γg⋅∇(v))
-j_ΓgINS(w,p,q) = ( γ_p3 ) * jump(n_Γg⋅∇(p))*jump(n_Γg⋅∇(q))
+i_ΓgINS(w,u,v) = ( γ_BINS(w) + γ_uINS )*jump(n_Γg⋅∇(u))⋅jump(n_Γg⋅∇(v))
+j_ΓgINS(w,p,q) = ( γ_pINS(w) ) * jump(n_Γg⋅∇(p))*jump(n_Γg⋅∇(q))
 
-V2 = TestFESpace(
-  model=bgmodel,valuetype=VectorValue{D,Float64},reffe=:PLagrangian,
-  order=order,conformity=:H1)
 
-#importing velocity data
-#u_MRI_import(t) = CSV.read("Data/u_MRI_$(t)")
+function SolveStokes(i)
 
-u_MRI_import(t) = CSV.read("Data/u_MRI_$(t)") 
+  a((u,p),(v,q)) = 
+  ∫( α * m_ΩSP(u, v) + a_ΩSP(u, v) + b_ΩSP(u, q) + b_ΩSP(v, p) - α * sm_ΩSP(u, q) - sb_ΩSP(p, q) )dΩ +  #+ 
+  ∫(a_ΓSP(u, v) + b_ΓSP(u, q) + b_ΓSP(v, p) )dΓ + 
+  ∫( i_ΓgSP(u, v) - j_ΓgSP(p, q) )dΓg
 
-u_MRI_values(t) = convert(Array,u_MRI_import(t).u_MRI)
-u_MRI(t) = FEFunction(V2,u_MRI_values(t))
+l((v,q)) = 
+  ∫( α * m_ΩSP(u_MRI_Ω(i), v)  + a_ΩSP(u_MRI_Ω(i), v) - ϕ_ΩSP(q, i )  )dΩ +#+ 
+  ∫( u_MRI_Γ(i) ⊙ ( (γ_SP / h) * v - n_Γ ⋅ ∇(v) + q * n_Γ)  - v⋅(n_Γ⋅∇(u_MRI_Γ(i))) )dΓ #+ 
+  #∫( ν * v⋅(n_Γn⋅∇(u_Γn(i))) - (n_Γn⋅v)*p_Γn(i) )dΓn
 
-u_MRI_Ω(t) = restrict(u_MRI(t), trian_Ω)
-u_MRI_Γ(t) = restrict(u_MRI(t), trian_Γ)
+  # FE problem
+  op = AffineFEOperator(a,l,X,Y)
+  uh, ph = solve(op)
 
-#writevtk(trian_Ω,"u_MRI_0_Test",cellfields=["uh"=>u_MRI_Ω(0)])
-
-function SolveStokes(t)
-
-function A_Ω(X, Y)
-  u, p = X
-  v, q = Y
-  α * m_ΩSP(u, v) + a_ΩSP(u, v) + b_ΩSP(u, q) + b_ΩSP(v, p) - α * sm_ΩSP(u, q) - sb_ΩSP(p, q)
-end
-
-function A_Γ(X, Y)
-  u, p = X
-  v, q = Y
-  a_ΓSP(u, v) + b_ΓSP(u, q) + b_ΓSP(v, p)
-end
-
-function J_Γg(X, Y)
-  u, p = X
-  v, q = Y
-  i_ΓgSP(u, v) - j_ΓgSP(p, q)
-end
-
-function L_Ω(Y)
-  v, q = Y
-  α * m_ΩSP(u_MRI_Ω(t), v)  + a_ΩSP(u_MRI_Ω(t), v) - ϕ_ΩSP(q, t) - q * g(t)
-end
-
-function L_Γ(Y)
-  v, q = Y
-  u_MRI_Γ(t) ⊙ ( (γ_SP / h) * v - n_Γ ⋅ ∇(v) + q * n_Γ)  - v⋅(n_Γ⋅∇(u_MRI_Γ(t)))
-end
-
-function l_Γn(y)
-  v,q = y
-  0* q * g(t) #dummy 
-end
-
-# FE problem
-t_Ω = AffineFETerm(A_Ω,L_Ω,trian_Ω,quad_Ω)
-t_Γ = AffineFETerm(A_Γ,L_Γ,trian_Γ,quad_Γ)
-t_Γn = FESource(l_Γn,trian_Γn,quad_Γn)
-t_Γg = LinearFETerm(J_Γg,trian_Γg,quad_Γg)
-op = AffineFEOperator(X,Y,t_Ω,t_Γ,t_Γn,t_Γg)
-uh, ph = solve(op)
-
-(uh,ph)
-
-end # function Stokes
-
-function SolveNavierStokes(u_projΓ,uh_0,ph_0)
-
-function res_Ω(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  ( m_ΩINS(ut,v) + a_ΩINS(u,v) + b_ΩINS(v,p) + b_ΩINS(u,q) - v⋅f(t) + q*g(t) + c_ΩINS(u,v)  # + ρ * 0.5 * (∇⋅u) * u ⊙ v  
-  - sp_ΩINS(u,p,q)  -  st_ΩINS(u,ut,q)   + ϕ_ΩINS(u,q,t)     - sc_ΩINS(u,u,q) 
-  - sp_sΩINS(u,p,v) - st_sΩINS(u,ut,v)  + ϕ_sΩINS(u,v,t)    - sc_sΩINS(u,u,v) )
-end
-
-function jac_Ω(t,x,xt,dx,y)
-  u, p = x
-  du,dp = dx
-  v,q = y
-  ( a_ΩINS(du,v) + b_ΩINS(v,dp) + b_ΩINS(du,q)  + dc_ΩINS(u, du, v) # + ρ * 0.5 * (∇⋅u) * du ⊙ v 
-  - sp_ΩINS(u,dp,q)  - dsc_ΩINS(u,u,du,q) 
-  - sp_sΩINS(u,dp,v) - dsc_sΩINS(u,u,du,v) )
-end
-
-function jac_tΩ(t,x,xt,dxt,y)
-  u,p = x 
-  dut,dpt = dxt
-  v,q = y
-  ( m_ΩINS(dut,v) 
-  - st_ΩINS(u,dut,q) 
-  - st_sΩINS(u,dut,v) )
-end
-
-#Boundary term collection
-function res_Γ(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  a_ΓINS(u,v)+b_ΓINS(u,q)+b_ΓINS(v,p) - restrict(u_projΓ(t),trian_Γ) ⊙ (  ( γ(u)/h )*v - μ * n_Γ⋅∇(v) + q*n_Γ )
-end
-
-function jac_Γ(t,x,xt,dx,y)
-  du,dp = dx
-  v,q = y
-  a_ΓINS(du,v)+b_ΓINS(du,q)+b_ΓINS(v,dp)
-end
-
-function jac_tΓ(t,x,xt,dxt,y)
-  dut,dpt = dxt
-  v,q = y
-  0*m_ΩINS(dut,v)
-end
-
-#Neumann term collection
-function res_Γn(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  0*inner(u,v) 
-end
-
-function jac_Γn(t,x,xt,dx,y)
-  u, p = x
-  du,dp = dx
-  v,q = y
-  0*inner(du,v)
-end
+  (uh,ph)
   
-function jac_tΓn(t,x,xt,dxt,y)
-  dut,dpt = dxt
-  v,q = y
-  0*inner(dut,v)
-end
+  end # function Stokes
+  
+  function SolveNavierStokes(u_projΓ,uh_0,ph_0)
+  
+  #Interior term collection
+  res(t,(u,p),(ut,pt),(v,q)) = 
+  ∫( m_ΩINS(ut,v) + a_ΩINS(u,v) + b_ΩINS(v,p) + b_ΩINS(u,q) - v⋅f(t) + q*g(t) + c_ΩINS(u,v)  # + ρ * 0.5 * (∇⋅u) * u ⊙ v  
+  - sp_ΩINS(u,p,q)  -  st_ΩINS(u,ut,q)  + ϕ_ΩINS(u,q,t)     - sc_ΩINS(u,u,q) 
+  - sp_sΩINS(u,p,v) - st_sΩINS(u,ut,v)  + ϕ_sΩINS(u,v,t)    - sc_sΩINS(u,u,v) )dΩ + 
+  
+  ∫( a_ΓINS(u,v)+b_ΓINS(u,q)+b_ΓINS(v,p) - u_projΓ(t) ⊙ (  ( γ(u)/h )*v - μ * n_Γ⋅∇(v) + q*n_Γ ) )dΓ + 
+  #∫( a_ΓINS(u,v)+b_ΓINS(u,q)+b_ΓINS(v,p) - ud(t) ⊙ (  ( γ(u)/h )*v - μ * n_Γ⋅∇(v) + q*n_Γ ) )dΓ + 
+  
+  #∫( μ * - v⋅(n_Γn⋅ ∇( u_Γn(t) ) ) + (n_Γn⋅v)* p_Γn(t) )dΓn + 
+  
+  ∫( i_ΓgINS(u,u,v) - j_ΓgINS(u,p,q) )dΓg
+  
+  
+  jac(t,(u,p),(ut,pt),(du,dp),(v,q))=
+  ∫( a_ΩINS(du,v) + b_ΩINS(v,dp) + b_ΩINS(du,q)  + dc_ΩINS(u, du, v) # + ρ * 0.5 * (∇⋅u) * du ⊙ v 
+  - sp_ΩINS(u,dp,q)  - dsc_ΩINS(u,u,du,q) 
+  - sp_sΩINS(u,dp,v) - dsc_sΩINS(u,u,du,v) )dΩ + 
+  
+  ∫( a_ΓINS(du,v)+b_ΓINS(du,q)+b_ΓINS(v,dp) )dΓ + 
+  
+  ∫( i_ΓgINS(u,du,v) - j_ΓgINS(u,dp,q) )dΓg
+  
+  
+  jac_t(t,(u,p),(ut,pt),(dut,dpt),(v,q)) = 
+    ∫( m_ΩINS(dut,v) 
+    - st_ΩINS(u,dut,q) 
+    - st_sΩINS(u,dut,v) )dΩ
+  
+  X0 = X(0.0)
+  xh0 = interpolate_everywhere([uh_0,ph_0],X(0.0))
+  
+  op = TransientFEOperator(res,jac,jac_t,X,Y)
+  
+  #ls = LUSolver()
+  ls = PardisoSolver(op.assem_t.matrix_type)
+  
+  nls = NewtonRaphsonSolver(ls,1e-5,30)
+  
+  #=
+  
+  nls = NLSolver(
+      show_trace = true,
+      method = :newton,
+      linesearch = BackTracking(),
+  
+  #    ftol = 1e-2,
+  
+  =#
+  
+  odes = ThetaMethod(nls, dt, θ)
+  solver = TransientFESolver(odes)
+  sol_t = solve(solver, op, xh0, t0, tF)
+  
+  (sol_t)
+  
+  end #function INS
 
-#Skeleton term collection
-function res_Γg(t,x,xt,y)
-  u,p = x
-  ut,pt = xt
-  v,q = y
-  i_ΓgINS(u,u,v) - j_ΓgINS(u,p,q)
-end
-
-function jac_Γg(t,x,xt,dx,y)
-  u, p = x
-  du,dp = dx
-  v,q = y
-  i_ΓgINS(u,du,v) - j_ΓgINS(u,dp,q)
-end
-
-function jac_tΓg(t,x,xt,dxt,y)
-  u, p = x
-  dut,dpt = dxt
-  v,q = y
-  0*i_ΓgINS(u,dut,v)
-end
-
-xh0 = interpolate_everywhere([uh_0,ph_0],X(0.0))
-
-t_Ω = FETerm(res_Ω,jac_Ω,jac_tΩ,trian_Ω,quad_Ω)
-t_Γ = FETerm(res_Γ,jac_Γ,jac_tΓ,trian_Γ,quad_Γ)
-t_Γn = FETerm(res_Γn,jac_Γn,jac_tΓn,trian_Γn,quad_Γn)
-t_Γg = FETerm(res_Γg,jac_Γg,jac_tΓg,trian_Γg,quad_Γg)
-
-op = TransientFEOperator(X,Y,t_Ω,t_Γ,t_Γn,t_Γg)
-
-ls=LUSolver() 
-
-nls = NewtonRaphsonSolver(ls,1e-2,40)
-#nls = NewtonRaphsonSolver(ls,1e99,1) #semi-implicit
-
-odes = ThetaMethod(nls, dt, θ)
-solver = TransientFESolver(odes)
-sol_t = solve(solver, op, xh0, t0, tF)
-
-(sol_t)
-
-end #function INS
-
-function writePVD(filePath, trian_Ω, sol; append=false)
+function writePVD(filePath, Ω, sol; append=false)
     outfiles = paraview_collection(filePath, append=append) do pvd
         for (i, (xh, t)) in enumerate(sol)
             @show i
-            uh = restrict(xh[1],trian_Ω)
-            ph = restrict(xh[2],trian_Ω)
+            uh = xh[1]
+            ph = xh[2]
             pvd[t] = createvtk(
-                trian_Ω,
+                Ω,
                 filePath * "_$i.vtu",
                 cellfields = ["uh" => uh, "ph" => ph],
             )
@@ -410,6 +362,6 @@ println("Solving Navier Stokes")
 sol_t = SolveNavierStokes(u_projΓ,uh_0,ph_0)
 
 println("Writing Solution")
-writePVD(filePath, trian_Ω, sol_t, append=true)
+writePVD(filePath, Ω, sol_t, append=true)
 
 end #module

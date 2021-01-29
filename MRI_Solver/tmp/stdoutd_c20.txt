@@ -1,0 +1,13 @@
+
+======================================================================================
+                  Resource Usage on 2021-01-29 15:25:26:
+   Job Id:             16281088.gadi-pbs
+   Project:            bt62
+   Exit Status:        1
+   Service Units:      0.81
+   NCPUs Requested:    20                     NCPUs Used: 20              
+                                           CPU Time Used: 00:01:05                                   
+   Memory Requested:   80.0GB                Memory Used: 2.03GB          
+   Walltime requested: 20:00:00            Walltime Used: 00:01:13        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================

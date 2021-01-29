@@ -1,17 +1,15 @@
-testcomplete
- 34.395064 seconds (74.63 M allocations: 4.347 GiB, 2.88% gc time)
-testcomplete
-  6.885119 seconds (8.14 M allocations: 1016.904 MiB, 3.85% gc time)
+nthreads() = 1
+ 96.458697 seconds (8.61 M allocations: 3.932 GiB, 0.43% gc time)
 
 ======================================================================================
-                  Resource Usage on 2020-10-03 09:41:03:
-   Job Id:             11923020.gadi-pbs
+                  Resource Usage on 2021-01-28 12:24:13:
+   Job Id:             16186376.gadi-pbs
    Project:            bt62
    Exit Status:        0
-   Service Units:      1.09
+   Service Units:      2.35
    NCPUs Requested:    16                     NCPUs Used: 16              
-                                           CPU Time Used: 00:01:55                                   
-   Memory Requested:   96.0GB                Memory Used: 3.64GB          
-   Walltime requested: 00:05:00            Walltime Used: 00:01:22        
+                                           CPU Time Used: 00:33:33                                   
+   Memory Requested:   64.0GB                Memory Used: 25.08GB         
+   Walltime requested: 00:05:00            Walltime Used: 00:04:24        
    JobFS requested:    100.0MB                JobFS used: 0B              
 ======================================================================================
