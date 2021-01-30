@@ -1,0 +1,4 @@
+ Activating environment at `/scratch/bt62/cm8825/Project.toml`
+┌ Warning: `CSV.read(input; kw...)` is deprecated in favor of `using DataFrames; CSV.read(input, DataFrame; kw...)
+│   caller = read at CSV.jl:46 [inlined]
+└ @ Core ~/.julia/packages/CSV/UIgP3/src/CSV.jl:46

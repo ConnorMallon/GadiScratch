@@ -1,0 +1,34 @@
+Solving Stokes Projector
+sqrt(sum(∫(l2(u_P)) * dΩ)) = 0.0
+ulex2i = sqrt(sum(∫(l2(u_ex)) * dΩ)) = 0.0
+eul2i = sqrt(sum(∫(l2(e_u)) * dΩ)) = 0.0
+sqrt(sum(∫(l2(u_P)) * dΩ)) = 93.19535227218229
+ulex2i = sqrt(sum(∫(l2(u_ex)) * dΩ)) = 93.19535227218229
+eul2i = sqrt(sum(∫(l2(e_u)) * dΩ)) = 0.5693543623539093
+Solving Navier Stokes
+Testing Solution
+nliter = 1
+1
+(m, m0) = (0.05942164413988646, 1057.9829577395712)
+0.05942164413988646
+1057.9829577395712
+nliter = 2
+2
+(m, m0) = (0.0003065792508862949, 1057.9829577395712)
+0.0003065792508862949
+1057.9829577395712
+eul2i = sqrt(sum(∫(l2(e_u)) * dΩ)) = 0.0018944471221956105
+epl2i = sqrt(sum(∫(l2(e_p)) * dΩ)) = 0.0010166915684038911
+
+======================================================================================
+                  Resource Usage on 2021-01-30 15:04:41:
+   Job Id:             16415774.gadi-pbs
+   Project:            bt62
+   Exit Status:        0
+   Service Units:      2.04
+   NCPUs Requested:    7                      NCPUs Used: 7               
+                                           CPU Time Used: 00:08:41                                   
+   Memory Requested:   28.0GB                Memory Used: 1.73GB          
+   Walltime requested: 20:00:00            Walltime Used: 00:08:45        
+   JobFS requested:    100.0MB                JobFS used: 0B              
+======================================================================================
