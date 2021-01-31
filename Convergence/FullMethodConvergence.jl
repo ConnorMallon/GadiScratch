@@ -32,7 +32,7 @@ conv(u, ∇u) = (∇u') ⋅ u
 dconv(du, ∇du, u, ∇u) = conv(u, ∇du) #+ conv(du, ∇u)
 
 # Physical constants
-u_max = 150 #150# 150#  150 #cm/s
+u_max = 100 #150# 150#  150 #cm/s
 L = 1 #cm
 ρ =  1.06e-3 #kg/cm^3 
 μ =  3.50e-5 #kg/cm.s
@@ -42,9 +42,9 @@ L = 1 #cm
 # #=
 #Space Convergence Parameters
 θ = 1
-ns = [12,16,24,36]#,48]#,64]
-n_ts = 1*500 #[0.2,0.1,0.05]
-tF = Δt*500
+ns = [50,60,80,120]#[12,16,24,40]#,48]#,64]
+n_ts = 1*100 #[0.2,0.1,0.05]
+tF = Δt*n_ts
 SNRs = [1e10] #,20]#,5]
 n_tests = 1 #5 #20
 # =#
