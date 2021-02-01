@@ -1,4 +1,5 @@
 
+
 module FullMethod
 
 using Pkg
@@ -39,25 +40,25 @@ L = 1 #cm
 ν = μ/ρ 
 Δt =  0.046 / 1000 # * 0.1 / ( u_max )   # 0.046  #s \\
 
-# #=
+ #=
 #Space Convergence Parameters
 θ = 1
 ns = [50,60,80,120]#[12,16,24,40]#,48]#,64]
-n_ts = 1*100 #[0.2,0.1,0.05]
+n_ts = 1*1 #[0.2,0.1,0.05]
 tF = Δt*n_ts
-SNRs = [1e10] #,20]#,5]
-n_tests = 1 #5 #20
-# =#
+SNRs = [1e10,20,5]
+n_tests = 20
+ =#
 
- #=
+# #=
 #Time Convergence Parameters
 θ = 1
 ns = 32
-dts = [8,16,32]
+n_ts = [8,12,20,36]
 tF = Δt
-SNRs = 1e10 # [1e10,100,50,20,5]
-n_tests = 1 #50 #30
- =#
+SNRs = [1e10,100,50,20,5]
+n_tests = 20# 1 #50 #30
+# =#
 
 #Manufactured solution
 k=2*pi
@@ -381,6 +382,7 @@ for (xh_tn, tn) in sol_t
   push!(eul2,eul2i)
   push!(epl2,epl2i)
   println("$(tn*100/Δt)% of timesteps complete")
+  @show Int(round(((_t_n-dt)/dt)+1,digits=7))
 end
 
 eul2=last(eul2)
@@ -400,12 +402,15 @@ u_projΓ_vector = []
 uh_0,ph_0 = SolveStokes(t0)
 push!(u_projΓ_vector,uh_0)
 
-dtss = []
-for t in t0+dt:dt:tF
+dtss=[]
+for i in 1:n_t
+  t=i*dt
   u_proj_t,p_proj_t = SolveStokes(t)
   push!(u_projΓ_vector,u_proj_t)
   push!(dtss,t)
+  @show length(u_projΓ_vector)
 end
+
 uh = u_projΓ_vector
 u_projΓ(t) = u_projΓ_vector[Int(round((t/dt)+1,digits=7))]
 
@@ -454,7 +459,7 @@ for SNR in SNRs
     x_plot = hs
     x_plot_name = "h"
   else
-    x_plot = dts
+    x_plot = n_ts
     x_plot_name = "dt"
   end
 
@@ -496,4 +501,5 @@ CSV.write(filePath_Data, OutputData)
 savefig(filePath_Plot)
 
 end #module
+
 
