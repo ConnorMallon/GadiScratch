@@ -40,10 +40,10 @@ L = 1 #cm
 ρ =  1.06e-3 #kg/cm^3 
 μ =  3.50e-5 #kg/cm.s
 ν = μ/ρ 
-Δt =  0.046 / 100 # * 0.1 / ( u_max )   # 0.046  #s \\
+Δt =  0.046 / 1000 # * 0.1 / ( u_max )   # 0.046  #s \\
 
 θ = 1
-n_t = 10 #n of time steps
+n_t = 5 #1 #n of time steps
 
 t0 = 0.0
 dt = Δt
@@ -300,18 +300,22 @@ l((v,q)) =
   #ls = LUSolver()
   ls = PardisoSolver(op.assem_t.matrix_type)
   
-  nls = NewtonRaphsonSolver(ls,1e-5,30)
+  #nls = NewtonRaphsonSolver(ls,1e-5,30)
+
+  #nls = NewtonRaphsonSolver(ls,1e99,1) #debugging SI version
+  #nls = NewtonRaphsonSolver(ls,1e-1,10) #debugging SI version
   
-  #=
   
   nls = NLSolver(
-      show_trace = true,
-      method = :newton,
-      linesearch = BackTracking(),
+    ls,
+    show_trace = true,
+    method = :newton,
+    linesearch = BackTracking(),
+    ftol = 1e-3,
+    iterations=20
+)
+
   
-  #    ftol = 1e-2,
-  
-  =#
   
   odes = ThetaMethod(nls, dt, θ)
   solver = TransientFESolver(odes)
