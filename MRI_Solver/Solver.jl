@@ -43,7 +43,7 @@ L = 1 #cm
 Δt =  0.046 / 1000 # * 0.1 / ( u_max )   # 0.046  #s \\
 
 θ = 1
-n_t = 5 #1 #n of time steps
+n_t = 1 # 0 # 5 #1 #n of time steps
 
 t0 = 0.0
 dt = Δt
@@ -297,15 +297,15 @@ l((v,q)) =
   
   op = TransientFEOperator(res,jac,jac_t,X,Y)
   
-  #ls = LUSolver()
-  ls = PardisoSolver(op.assem_t.matrix_type)
+  ls = LUSolver()
+  #ls = PardisoSolver(op.assem_t.matrix_type)
   
   #nls = NewtonRaphsonSolver(ls,1e-5,30)
 
-  #nls = NewtonRaphsonSolver(ls,1e99,1) #debugging SI version
+  nls = NewtonRaphsonSolver(ls,1e99,1) #debugging SI version
   #nls = NewtonRaphsonSolver(ls,1e-1,10) #debugging SI version
   
-  
+ #= 
   nls = NLSolver(
     ls,
     show_trace = true,
@@ -314,7 +314,7 @@ l((v,q)) =
     ftol = 1e-3,
     iterations=20
 )
-
+=#
   
   
   odes = ThetaMethod(nls, dt, θ)
